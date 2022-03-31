@@ -1,15 +1,6 @@
-from singleton import DBSingleton
+from singleton import *
 from docxtpl import DocxTemplate
 from models import *
-
-if __name__ == "__main__":
-    LaJolieBoiteACode = Entreprise(1)
-    Prospect_test = Prospect(1)
-    Contact_test = Contact(1)
-    Details_facture_test = Details_facture(1)
-
-    template_values = {}
-    document = DocxTemplate("Factures/template/template.docx")
 
 
 class Facture():
@@ -39,5 +30,17 @@ class Facture():
             'date_f': self.details_facture.date_emission_f,
             'montant_f': self.details_facture.montant_f
         }
+        print(template_values)
         document.render(template_values)
-        document.save("Factures/facture_" + self.details_facture.numero_f + self.details_facture.date_emission_f + ".docx")
+        document.save(
+            "Factures/facture_" + self.details_facture.numero_f+self.details_facture.date_emission_f + ".docx")
+if __name__ == "__main__":
+    template_values = {}
+    document = DocxTemplate("Factures/template/template.docx")
+    LaJolieBoiteACode = Entreprise(1)
+    Prospect_test = Prospect(1)
+    Contact_test = Contact(1)
+    Details_facture_test = Details_facture(1)
+    laFactureQuoi=Facture(LaJolieBoiteACode,Prospect_test,Contact_test,Details_facture_test)
+    laFactureQuoi.generate()
+

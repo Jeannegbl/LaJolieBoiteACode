@@ -1,6 +1,7 @@
 import mysql.connector
 from dotenv import load_dotenv
 
+
 class Singleton:
 
     def __init__(self, cls):
@@ -23,10 +24,10 @@ class Singleton:
 @Singleton
 class DBSingleton:
     def __init__(self):
-        self.conn = mysql.connector.connect(user='root', password='root', host='localhost', database='LaJolieBoiteACode')
+        self.conn = mysql.connector.connect(user='root', password='', host='localhost', database='lajolieboiteacode')
         pass
 
-    def query(self, sql, params = ()):
+    def query(self, sql, params=()):
         cursor = self.conn.cursor()
         # This attaches the tracer but ca marche pas on mysql
         # self.conn.set_trace_callback(print)
@@ -40,6 +41,7 @@ class DBSingleton:
             return self.result
         else:
             self.conn.commit()
+
             cursor.close()
             return self.result
 
@@ -47,10 +49,16 @@ class DBSingleton:
         return 'Database connection object'
 
 
-
-def Select(col, table, id):
+def Select(col, table,id):
     db = DBSingleton.Instance()
-    sql = "SELECT %s from %s WHERE id=%s"
-    params: tuple = (col, table, id)
+    liste = col.split(",")
+    stringInsert = ""
+    for colonne in liste:
+        stringInsert = stringInsert + colonne+","
+    stringInsert = stringInsert[:-1]
+    sql = "SELECT " + stringInsert + " from " + table + " WHERE id=%s"
+    params: tuple = (id,)
     db.query(sql, params)
     return db.result[0]
+
+
