@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 31 mars 2022 à 14:12
+-- Généré le : jeu. 31 mars 2022 à 14:50
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -64,7 +64,8 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`id`, `nom`, `prenom`, `email`, `poste`, `telephone`, `statut`, `prospect_id`) VALUES
-(1, 'DUCLOS', 'Erwann', 'erwann@duclos.fr', 'Professeur', 111111111, 1, 1);
+(1, 'DUCLOS', 'Erwann', 'erwann@duclos.fr', 'Professeur', 111111111, 1, 1),
+(2, 'PANNETIER', 'Magali', 'magali@pannetier.fr', 'Directrice', 111111110, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -75,7 +76,7 @@ INSERT INTO `contact` (`id`, `nom`, `prenom`, `email`, `poste`, `telephone`, `st
 CREATE TABLE `entreprise` (
   `id` int(11) NOT NULL,
   `nom` varchar(30) DEFAULT NULL,
-  `numero_siret` varchar(20) DEFAULT NULL,
+  `numero_siren` varchar(20) DEFAULT NULL,
   `adresse_postale` varchar(50) DEFAULT NULL,
   `code_postale` int(11) DEFAULT NULL,
   `ville` varchar(45) DEFAULT NULL,
@@ -89,7 +90,7 @@ CREATE TABLE `entreprise` (
 -- Déchargement des données de la table `entreprise`
 --
 
-INSERT INTO `entreprise` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postale`, `ville`, `cedex`, `telephone`, `email`, `IBAN`) VALUES
+INSERT INTO `entreprise` (`id`, `nom`, `numero_siren`, `adresse_postale`, `code_postale`, `ville`, `cedex`, `telephone`, `email`, `IBAN`) VALUES
 (1, 'La jolie boite à code', '123 456 7890', '123 Rue du Soleil', 75009, 'Paris', 9, 123456789, 'lajolieboiteacode@gmail.com', 'FR12 1234 1234 1234 1234 1234 123');
 
 -- --------------------------------------------------------
@@ -102,6 +103,7 @@ CREATE TABLE `facture` (
   `id` int(11) NOT NULL,
   `numero_facture` int(11) DEFAULT NULL,
   `date_emission` datetime DEFAULT NULL,
+  `montant` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
   `prospect_id` int(11) NOT NULL,
   `entreprise_id` int(11) NOT NULL
@@ -111,8 +113,8 @@ CREATE TABLE `facture` (
 -- Déchargement des données de la table `facture`
 --
 
-INSERT INTO `facture` (`id`, `numero_facture`, `date_emission`, `contact_id`, `prospect_id`, `entreprise_id`) VALUES
-(1, 1, '2022-03-31 12:29:37', 1, 1, 1);
+INSERT INTO `facture` (`id`, `numero_facture`, `date_emission`, `montant`, `contact_id`, `prospect_id`, `entreprise_id`) VALUES
+(1, 1, '2022-03-31 12:29:37', 1000, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -136,8 +138,7 @@ CREATE TABLE `prospect` (
 --
 
 INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postale`, `ville`, `description`, `url`) VALUES
-(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/'),
-(2, 'Saint Martin', '111 111 1110', '123 Rue de Saint Mart', 35000, 'Rennes', 'Lycée Saint Martin', 'https://www.saintmartin-rennes.org/');
+(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/');
 
 -- --------------------------------------------------------
 
@@ -212,7 +213,7 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `entreprise`
