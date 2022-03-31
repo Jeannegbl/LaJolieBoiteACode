@@ -1,6 +1,8 @@
-from docxtpl import DocxTemplate
 import datetime
 from singleton import DBSingleton
+from docxtpl import DocxTemplate
+
+
 if __name__ == "__main__":
     db = DBSingleton.Instance()
     def Select(table,col,id):
@@ -13,13 +15,29 @@ if __name__ == "__main__":
     template_values = {}
     document = DocxTemplate("Factures/template/template.docx")
 
-class Emmeteur:
-    rue = 'Rue Fernand Robert'
-    ville = 'Rennes'
-    tel = '07.20.62.77.80'
+class information_entreprise():
+    nom =
+    rue =
+    adresse =
+    code_postal =
+    ville =
+    cedex =
+    SIREN =
+    tel =
+    email =
+    IBAN =
+
+class information_prospect():
+    nom =
+    adresse =
+    code_postal =
+    ville =
+
+class information_contact():
+    nom =
 
 class Facture():
-    def __init__(self, emmeteur: Emmeteur, siren, email:str):
+    def __init__(self, information_entreprise: information_entreprise, information_prospect: information_prospect, information_contact: information_contact, siren, email:str):
         self.rue = emmeteur.rue
         self.ville = ville
 
