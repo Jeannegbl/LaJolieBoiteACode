@@ -1,27 +1,32 @@
 from docxtpl import DocxTemplate
 import datetime
-#from singleton import DBSingleton
+from singleton import DBSingleton
 if __name__ == "__main__":
-    #db = DBSingleton.Instance()
+    db = DBSingleton.Instance()
     def Select(table,col,id):
         sql="SELECT %s from %s WHERE id=%s"
         params:tuple=(col,table,id)
         db.query(sql,params)
         return db.result[0]
-#penis
+
 
     template_values = {}
-    document = DocxTemplate("template.docx")
+    document = DocxTemplate("Factures/template/template.docx")
+
+class Emmeteur:
+    rue = 'Rue Fernand Robert'
+    ville = 'Rennes'
+    tel = '07.20.62.77.80'
+
+class Facture():
+    def __init__(self, emmeteur: Emmeteur, siren, email:str):
+        self.rue = emmeteur.rue
+        self.ville = ville
 
 
-    rue = "13 Allee vous faire enculer"
-    template_values["rue"] = rue
-
-    ville = "35000 Rennes France"
-    template_values["ville"] = ville
-
-    siret = "2309709863"
-    template_values["siret"] = siret
+    def generate(self):
+        document.render(template_values)
+        document.save("Factures/facture_" + idFacture + ".docx")
 
 
     tel = "06332925"
@@ -49,5 +54,3 @@ if __name__ == "__main__":
     date = str(datetime.datetime.now())
     template_values["date"] = date
 
-    document.render(template_values)
-    document.save("Factures/facture_"+idFacture+".docx")
