@@ -13,15 +13,20 @@ if __name__ == "__main__":
     template_values = {}
     document = DocxTemplate("Factures/template/template.docx")
 
+class Emmeteur:
+    rue = 'Rue Fernand Robert'
+    ville = 'Rennes'
+    tel = '07.20.62.77.80'
 
-    rue = "13 Rue fernand robert"
-    template_values["rue"] = rue
+class Facture():
+    def __init__(self, emmeteur: Emmeteur, siren, email:str):
+        self.rue = emmeteur.rue
+        self.ville = ville
 
-    ville = "35000 Rennes France"
-    template_values["ville"] = ville
 
-    siret = "2309709863"
-    template_values["siret"] = siret
+    def generate(self):
+        document.render(template_values)
+        document.save("Factures/facture_" + idFacture + ".docx")
 
 
     tel = "06332925"
@@ -49,5 +54,3 @@ if __name__ == "__main__":
     date = str(datetime.datetime.now())
     template_values["date"] = date
 
-    document.render(template_values)
-    document.save("Factures/facture_"+idFacture+".docx")
