@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 31 mars 2022 à 12:31
+-- Généré le : jeu. 31 mars 2022 à 14:12
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -136,7 +136,8 @@ CREATE TABLE `prospect` (
 --
 
 INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postale`, `ville`, `description`, `url`) VALUES
-(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/');
+(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/'),
+(2, 'Saint Martin', '111 111 1110', '123 Rue de Saint Mart', 35000, 'Rennes', 'Lycée Saint Martin', 'https://www.saintmartin-rennes.org/');
 
 -- --------------------------------------------------------
 
@@ -229,7 +230,7 @@ ALTER TABLE `facture`
 -- AUTO_INCREMENT pour la table `prospect`
 --
 ALTER TABLE `prospect`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
@@ -252,7 +253,7 @@ ALTER TABLE `commentaire`
 -- Contraintes pour la table `contact`
 --
 ALTER TABLE `contact`
-  ADD CONSTRAINT `fk_contact_prospect1` FOREIGN KEY (`prospect_id`) REFERENCES `prospect` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_contact_prospect1` FOREIGN KEY (`prospect_id`) REFERENCES `prospect` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `facture`
