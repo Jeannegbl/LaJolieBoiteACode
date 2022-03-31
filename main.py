@@ -1,8 +1,8 @@
 from docxtpl import DocxTemplate
 import datetime
-from singleton import DBSingleton
+#from singleton import DBSingleton
 if __name__ == "__main__":
-    db = DBSingleton.Instance()
+    #db = DBSingleton.Instance()
     def Select(table,col,id):
         sql="SELECT %s from %s WHERE id=%s"
         params:tuple=(col,table,id)
