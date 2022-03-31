@@ -23,7 +23,7 @@ class Singleton:
 @Singleton
 class DBSingleton:
     def __init__(self):
-        self.conn = mysql.connector.connect(user='username', password='password', host='localhost', database='LaJolieBoiteACode')
+        self.conn = mysql.connector.connect(user='root', password='root', host='localhost', database='LaJolieBoiteACode')
         pass
 
     def query(self, sql, params = ()):
@@ -45,3 +45,12 @@ class DBSingleton:
 
     def __str__(self):
         return 'Database connection object'
+
+
+
+def Select(col, table, id):
+    db = DBSingleton.Instance()
+    sql = "SELECT %s from %s WHERE id=%s"
+    params: tuple = (col, table, id)
+    db.query(sql, params)
+    return db.result[0]
