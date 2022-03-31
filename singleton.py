@@ -51,12 +51,7 @@ class DBSingleton:
 
 def Select(col, table,id):
     db = DBSingleton.Instance()
-    liste = col.split(",")
-    stringInsert = ""
-    for colonne in liste:
-        stringInsert = stringInsert + colonne+","
-    stringInsert = stringInsert[:-1]
-    sql = "SELECT " + stringInsert + " from " + table + " WHERE id=%s"
+    sql = "SELECT " + col + " from " + table + " WHERE id=%s"
     params: tuple = (id,)
     db.query(sql, params)
     return db.result[0]
