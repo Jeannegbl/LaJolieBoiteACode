@@ -1,20 +1,20 @@
 from docxtpl import DocxTemplate
 import datetime
-#from singleton import DBSingleton
+from singleton import DBSingleton
 if __name__ == "__main__":
-    #db = DBSingleton.Instance()
+    db = DBSingleton.Instance()
     def Select(table,col,id):
         sql="SELECT %s from %s WHERE id=%s"
         params:tuple=(col,table,id)
         db.query(sql,params)
         return db.result[0]
-#penis
+
 
     template_values = {}
-    document = DocxTemplate("template.docx")
+    document = DocxTemplate("Factures/template/template.docx")
 
 
-    rue = "13 Allee vous faire enculer"
+    rue = "13 Rue fernand robert"
     template_values["rue"] = rue
 
     ville = "35000 Rennes France"
