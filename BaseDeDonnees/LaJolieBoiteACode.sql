@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 31 mars 2022 à 15:06
+-- Généré le : jeu. 31 mars 2022 à 15:13
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -77,8 +77,8 @@ CREATE TABLE `entreprise` (
   `id` int(11) NOT NULL,
   `nom` varchar(30) DEFAULT NULL,
   `numero_siren` varchar(20) DEFAULT NULL,
-  `adresse_postal` varchar(50) DEFAULT NULL,
-  `code_postale` int(11) DEFAULT NULL,
+  `adresse_postale` varchar(50) DEFAULT NULL,
+  `code_postal` int(11) DEFAULT NULL,
   `ville` varchar(45) DEFAULT NULL,
   `cedex` int(11) DEFAULT NULL,
   `telephone` int(11) DEFAULT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE `entreprise` (
 -- Déchargement des données de la table `entreprise`
 --
 
-INSERT INTO `entreprise` (`id`, `nom`, `numero_siren`, `adresse_postal`, `code_postale`, `ville`, `cedex`, `telephone`, `email`, `IBAN`) VALUES
+INSERT INTO `entreprise` (`id`, `nom`, `numero_siren`, `adresse_postale`, `code_postal`, `ville`, `cedex`, `telephone`, `email`, `IBAN`) VALUES
 (1, 'La jolie boite à code', '123 456 7890', '123 Rue du Soleil', 75009, 'Paris', 9, 123456789, 'lajolieboiteacode@gmail.com', 'FR12 1234 1234 1234 1234 1234 123');
 
 -- --------------------------------------------------------
@@ -126,8 +126,8 @@ CREATE TABLE `prospect` (
   `id` int(11) NOT NULL,
   `nom` varchar(30) DEFAULT NULL,
   `numero_siret` varchar(20) DEFAULT NULL,
-  `adresse_postal` varchar(50) DEFAULT NULL,
-  `code_postale` int(11) DEFAULT NULL,
+  `adresse_postale` varchar(50) DEFAULT NULL,
+  `code_postal` int(11) DEFAULT NULL,
   `ville` varchar(45) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `url` varchar(100) DEFAULT NULL
@@ -137,7 +137,7 @@ CREATE TABLE `prospect` (
 -- Déchargement des données de la table `prospect`
 --
 
-INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postal`, `code_postale`, `ville`, `description`, `url`) VALUES
+INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postal`, `ville`, `description`, `url`) VALUES
 (1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/');
 
 -- --------------------------------------------------------
