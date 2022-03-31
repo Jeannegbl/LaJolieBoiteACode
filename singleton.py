@@ -1,5 +1,4 @@
 import mysql.connector
-#bite
 
 class Singleton:
 
