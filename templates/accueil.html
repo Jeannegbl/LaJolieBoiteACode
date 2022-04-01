@@ -1,0 +1,58 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='accueil.css') }}">
+        <link rel="icon" href="{{ url_for('static', filename='logo.png') }}">
+        <title>Accueil</title>
+    </head>
+    <body>
+        <header class="header">
+            <img class="logo" src="{{ url_for('static', filename='logo.png') }}">
+            <p class="titre">La jolie boite à code</p>
+        </header>
+        <section>
+            <table class="prospect">
+                <tr>
+                    <th>NOM</th>
+                    <th>N° SIRET</th>
+                    <th>ADRESSE POSTALE</th>
+                    <th>CODE POSTAL</th>
+                    <th>VILLE</th>
+                    <th>DESCRIPTION</th>
+                    <th>URL</th>
+                    <th>NOMBRE FACTURE</th>
+                </tr>
+                <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                </tr>
+                <tr>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                    <td>test2</td>
+                </tr>
+                <tr>
+                    <td>{{prospect.nom_p}}</td>
+                    <td>{{prospect.siret_p}}</td>
+                    <td>{{prospect.adresse_p}}</td>
+                    <td>{{prospect.code_postal_p}}</td>
+                    <td>{{prospect.ville_p}}</td>
+                    <td>{{prospect.desc_p}}</td>
+                    <td>{{prospect.url_p}}</td>
+                    <td>{{prospect.nbfacture}}</td>
+                </tr>
+            </table>
+        </section>
+    </body>
+</html>

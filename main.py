@@ -3,7 +3,7 @@ from docxtpl import DocxTemplate
 from models import *
 
 
-class Facture():
+class Facture:
     def __init__(self, entreprise: Entreprise, prospect: Prospect, contact: Contact, details_facture: Details_facture):
         self.entreprise = entreprise
         self.prospect = prospect
@@ -32,8 +32,8 @@ class Facture():
         }
         print(template_values)
         document.render(template_values)
-        document.save(
-            "Factures/facture_" + self.details_facture.numero_f+self.details_facture.date_emission_f + ".docx")
+        document.save("Factures/facture_" + self.details_facture.numero_f+self.details_facture.date_emission_f + ".docx")
+
 if __name__ == "__main__":
     template_values = {}
     document = DocxTemplate("Factures/template/template.docx")
@@ -41,6 +41,6 @@ if __name__ == "__main__":
     Prospect_test = Prospect(1)
     Contact_test = Contact(1)
     Details_facture_test = Details_facture(1)
-    laFactureQuoi=Facture(LaJolieBoiteACode,Prospect_test,Contact_test,Details_facture_test)
-    laFactureQuoi.generate()
+    LaFacture = Facture(LaJolieBoiteACode, Prospect_test, Contact_test, Details_facture_test)
+    LaFacture.generate()
 
