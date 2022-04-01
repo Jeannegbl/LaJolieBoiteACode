@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv('.env')
-print(os.environ.get('pseudo'))
+
+
 class Singleton:
 
     def __init__(self, cls):
@@ -28,7 +29,8 @@ class Singleton:
 @Singleton
 class DBSingleton:
     def __init__(self):
-        self.conn = mysql.connector.connect(user=os.environ.get('pseud'), password=os.environ.get('password'), host='localhost', database=os.environ.get('database'))
+        self.conn = mysql.connector.connect(user=os.environ.get('pseudo'), password=os.environ.get('password'),
+                                            host='localhost', database=os.environ.get('database'))
         pass
 
     def query(self, sql, params=()):
@@ -53,7 +55,7 @@ class DBSingleton:
         return 'Database connection object'
 
 
-def Select(col, table,id):
+def Select(col, table, id):
     db = DBSingleton.Instance()
     sql = "SELECT " + col + " from " + table + " WHERE id=%s"
     params: tuple = (id,)
@@ -61,3 +63,12 @@ def Select(col, table,id):
     return db.result[0]
 
 
+def Insert(col, table, params: tuple):
+    db = DBSingleton.Instance()
+    insertions = ""
+    col_list=col.split(',')
+    for _ in col_list:
+        insertions = insertions + "%s,"
+    insertions = insertions[:-1]
+    sql = "INSERT INTO " + table + "(" + col + ")VALUES (" + insertions + ")"
+    db.query(sql, params)
