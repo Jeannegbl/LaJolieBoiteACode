@@ -1,8 +1,10 @@
-import os
-
 import mysql.connector
+import os
+from os.path import join, dirname
 from dotenv import load_dotenv
 
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv('.env')
 
 class Singleton:
 
@@ -26,7 +28,7 @@ class Singleton:
 @Singleton
 class DBSingleton:
     def __init__(self):
-        self.conn = mysql.connector.connect(user='root', password='root', host='localhost', database='LaJolieBoiteACode')
+        self.conn = mysql.connector.connect(user=os.environ.get('username'), password=os.environ.get('password'), host='localhost', database=os.environ.get('database'))
         pass
 
     def query(self, sql, params=()):
