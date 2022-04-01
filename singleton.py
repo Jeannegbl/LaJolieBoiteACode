@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv('.env')
-
+print(os.environ.get('pseudo'))
 class Singleton:
 
     def __init__(self, cls):
@@ -28,7 +28,7 @@ class Singleton:
 @Singleton
 class DBSingleton:
     def __init__(self):
-        self.conn = mysql.connector.connect(user=os.environ.get('username'), password=os.environ.get('password'), host='localhost', database=os.environ.get('database'))
+        self.conn = mysql.connector.connect(user=os.environ.get('pseud'), password=os.environ.get('password'), host='localhost', database=os.environ.get('database'))
         pass
 
     def query(self, sql, params=()):
