@@ -1,5 +1,8 @@
 from docxtpl import DocxTemplate
 from models import *
+from flask import render_template, Flask
+from config import Config
+from formulaires import RegisterForm
 
 
 class Facture:
@@ -31,7 +34,25 @@ class Facture:
         }
         print(template_values)
         document.render(template_values)
-        document.save("Factures/facture_" + self.details_facture.numero_f+self.details_facture.date_emission_f + ".docx")
+        document.save(
+            "Factures/facture_" + self.details_facture.numero_f + self.details_facture.date_emission_f + ".docx")
+
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+
+@app.route('/', methods=['get', 'post'])
+def index():
+    form = RegisterForm()
+    return render_template('connexion.html', form=form, title='connexion')
+
+
+@app.route('/accueil')
+def accueil():
+    Prospectaccueil = Prospect(1)
+    return render_template('accueil.html', title='prospect')
+
 
 if __name__ == "__main__":
     template_values = {}
@@ -42,4 +63,3 @@ if __name__ == "__main__":
     Details_facture_test = Details_facture(1)
     LaFacture = Facture(LaJolieBoiteACode, Prospect_test, Contact_test, Details_facture_test)
     LaFacture.generate()
-
