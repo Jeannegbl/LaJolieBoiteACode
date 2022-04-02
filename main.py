@@ -16,8 +16,8 @@ def index():
 
 @app.route('/accueil')
 def accueil():
-    Prospectaccueil = Prospect(1)
-    return render_template('accueil.html', title='prospect')
+    Prospects = Prospectaccueil(1)
+    return render_template('accueil.html', title='prospect', prospect=Prospects)
 
 
 if __name__ == "__main__":

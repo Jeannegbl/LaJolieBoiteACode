@@ -48,7 +48,7 @@ class Prospectaccueil:
     def __init__(self, id):
         element = Select('nom, numero_siret, adresse_postale, code_postal, ville, description, url', 'prospect', id)
         self.nom_p = element[0]
-        self.siret_p = element[1]
+        self.siret_p = str(element[1])
         self.adresse_p = element[2]
         self.code_postal_p = str(element[3])
         self.ville_p = element[4]
