@@ -46,3 +46,22 @@ tr:nth-child(odd) {
 	background: #ffffff;
     color: black;
 }
+
+.retour{
+    position: fixed;
+    top: 20vh;
+}
+.retour-2{
+    position: fixed;
+    top: 30vh;
+}
+
+.actif{
+    color: green;
+}
+.inactif{
+    color: red;
+}
+#cacher{
+    display: none;
+}

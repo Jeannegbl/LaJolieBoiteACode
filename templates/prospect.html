@@ -1,0 +1,49 @@
+{% extends 'accueil.html' %}
+
+{% block titre %}<p class="titre">{{nom_prospect}}{% endblock %}</p>
+
+{% block section %}
+<section>
+    <table class="prospect">
+        <tr>
+            <th>NOM</th>
+            <th>PRÉNOM</th>
+            <th>EMAIL</th>
+            <th>POSTE</th>
+            <th>TÉLÉPHONE</th>
+            <th>COMMENTAIRES</th>
+            <th>ACTIF/INACTIF</th>
+            <th></th>
+        </tr>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{contact.1}}</td>
+            <td>{{contact.2}}</td>
+            <td>{{contact.3}}</td>
+            <td>{{contact.4}}</td>
+            <td>{{contact.5}}</td>
+            <td>{{contact.8}}</td>
+            {% if contact.6 == 1 %}
+                <td class="actif">ACTIF</td>
+            <td><a href="{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+            {% else %}
+                <td class="inactif">INACTIF</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+    {% if activiter == 1 %}
+        {% for information in info_prospect %}
+        <p class="retour">Adresse : {{information.1}} à {{information.3}} {{information.2}}
+            </br>Description : {{information.4}}
+            </br>Site : <a href="{{information.5}}" target="_blank">{{information.5}}</a>
+            </br>N° SIRET : {{information.0}}
+        </p>
+        {% endfor %}
+    <input class="retour" type="button" value="Retour" onclick="window.location.href='{{('accueil')}}';">
+    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='{{nom_prospect}}/inactif';">
+    {% else %}
+    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="javascript:history.back(-1);">
+    {% endif %}
+</section>
+{% endblock %}

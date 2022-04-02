@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 31 mars 2022 à 15:13
+-- Généré le : sam. 02 avr. 2022 à 23:35
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -40,7 +40,8 @@ CREATE TABLE `commentaire` (
 --
 
 INSERT INTO `commentaire` (`utilisateur_id`, `contact_id`, `description`, `date_creation`) VALUES
-(1, 1, 'Contrat en cours pour faire notre projet Python', '2022-03-31 12:28:35');
+(1, 1, 'Contrat en cours pour faire notre projet Python', '2022-03-31 12:28:35'),
+(1, 1, 'Je suis un test', '2022-04-02 22:40:10');
 
 -- --------------------------------------------------------
 
@@ -114,7 +115,7 @@ CREATE TABLE `facture` (
 --
 
 INSERT INTO `facture` (`id`, `numero_facture`, `date_emission`, `montant`, `contact_id`, `prospect_id`, `entreprise_id`) VALUES
-(1, 1, '2022-03-31 12:29:37', 1000, 1, 1, 1);
+(1, 1, '2022-03-31 12:29:37', 1500, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -138,7 +139,8 @@ CREATE TABLE `prospect` (
 --
 
 INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postal`, `ville`, `description`, `url`) VALUES
-(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/');
+(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/'),
+(3, 'Saint Martin', '111 111 1110', '123 Rue de Saint Mart', 35000, 'Rennes', 'Lycée St Martin', 'https://www.saintmartin-rennes.org/');
 
 -- --------------------------------------------------------
 
@@ -167,7 +169,6 @@ INSERT INTO `utilisateur` (`id`, `login`, `mot_de_passe`) VALUES
 -- Index pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
-  ADD PRIMARY KEY (`utilisateur_id`,`contact_id`),
   ADD KEY `fk_utilisateur_has_contact_contact1_idx` (`contact_id`),
   ADD KEY `fk_utilisateur_has_contact_utilisateur_idx` (`utilisateur_id`);
 
@@ -175,7 +176,7 @@ ALTER TABLE `commentaire`
 -- Index pour la table `contact`
 --
 ALTER TABLE `contact`
-  ADD PRIMARY KEY (`id`,`prospect_id`),
+  ADD PRIMARY KEY (`id`) USING BTREE,
   ADD KEY `fk_contact_prospect1_idx` (`prospect_id`);
 
 --
@@ -188,7 +189,7 @@ ALTER TABLE `entreprise`
 -- Index pour la table `facture`
 --
 ALTER TABLE `facture`
-  ADD PRIMARY KEY (`id`,`contact_id`,`prospect_id`,`entreprise_id`),
+  ADD PRIMARY KEY (`id`) USING BTREE,
   ADD KEY `fk_facture_contact1_idx` (`contact_id`),
   ADD KEY `fk_facture_prospect1_idx` (`prospect_id`),
   ADD KEY `fk_facture_entreprise1_idx` (`entreprise_id`);
@@ -231,7 +232,7 @@ ALTER TABLE `facture`
 -- AUTO_INCREMENT pour la table `prospect`
 --
 ALTER TABLE `prospect`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`

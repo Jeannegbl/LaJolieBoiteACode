@@ -1,0 +1,26 @@
+{% extends 'accueil.html' %}
+
+{% block titre %}<p class="titre">{{nom_prospect}}{% endblock %}</p>
+
+{% block section %}
+<section>
+    {% for dernier_com in commentaire %}
+    <p class="prospect">Le {{dernier_com.1}}</br>"{{dernier_com.0}}"</br>écrit par {{dernier_com.2}}</p>
+    {% endfor %}
+    <button class="prospect" onclick="myFunction()">Afficher/Cacher les autres commentaires</button>
+    {% for comm in liste_commentaires %}
+    <p class="prospect" id="cacher">Le {{comm.1}}</br>"{{comm.0}}"</br>écrit par {{comm.2}}</p>
+    {% endfor %}
+    <input class="retour" type="button" value="Retour" onclick="javascript:history.back(-1);">
+</section>
+<script>
+function myFunction() {
+  var x = document.getElementById("cacher");
+  if (x.style.display === "block") {
+    x.style.display = "none";
+  } else {
+    x.style.display = "block";
+  }
+}
+</script>
+{% endblock %}

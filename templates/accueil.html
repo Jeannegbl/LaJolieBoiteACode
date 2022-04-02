@@ -8,31 +8,25 @@
     <body>
         <header class="header">
             <img class="logo" src="{{ url_for('static', filename='logo.png') }}">
-            <p class="titre">La jolie boite à code</p>
+            {% block titre %}<p class="titre">La jolie boite à code</p>{% endblock %}
         </header>
+        {% block section %}
         <section>
             <table class="prospect">
                 <tr>
                     <th>NOM</th>
-                    <th>N° SIRET</th>
-                    <th>ADRESSE POSTALE</th>
-                    <th>CODE POSTAL</th>
-                    <th>VILLE</th>
-                    <th>DESCRIPTION</th>
-                    <th>URL</th>
                     <th>NOMBRE FACTURE</th>
+                    <th></th>
                 </tr>
+                {% for prospect in prospects %}
                 <tr>
-                    <td>{{prospect.nom_p}}</td>
-                    <td>{{prospect.siret_p}}</td>
-                    <td>{{prospect.adresse_p}}</td>
-                    <td>{{prospect.code_postal_p}}</td>
-                    <td>{{prospect.ville_p}}</td>
-                    <td>{{prospect.desc_p}}</td>
-                    <td>{{prospect.url_p}}</td>
-                    <td>{{prospect.nbfacture}}</td>
+                    <td>{{prospect.0}}</td>
+                    <td>{{prospect.1}}</td>
+                    <td><input type="button" value="Voir les contacts" onclick="window.location.href='{{prospect.0}}';"></td>
                 </tr>
+                {% endfor %}
             </table>
         </section>
+        {% endblock %}
     </body>
 </html>

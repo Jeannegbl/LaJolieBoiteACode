@@ -54,6 +54,18 @@ class DBSingleton:
     def __str__(self):
         return 'Database connection object'
 
+    def query_simple(self, sql):
+        mycursor = self.conn.cursor()
+        mycursor.execute(sql)
+        return mycursor
+
+    def fetchall_simple(self, sql):
+        mycursor = self.query_simple(sql)
+        results = mycursor.fetchall()
+        mycursor.close()
+        return results
+
+
 
 def Select(col, table, id):
     db = DBSingleton.Instance()
