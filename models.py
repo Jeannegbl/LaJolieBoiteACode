@@ -3,8 +3,8 @@ from singleton import Select
 
 class Entreprise:
     def __init__(self, id):
-        element = Select('nom, adresse_postale, code_postal, ville, cedex, numero_siren, telephone, email, IBAN',
-                         'entreprise', id)
+        element = Select('entreprise', 'nom, adresse_postale, code_postal, ville, cedex, numero_siren, telephone, '
+                                       'email, IBAN',"id", id)
         self.nom_e = element[0]
         self.adresse_e = element[1]
         self.code_postal_e = str(element[2])
@@ -18,7 +18,7 @@ class Entreprise:
 
 class Prospect:
     def __init__(self, id):
-        element = Select('nom, adresse_postale, code_postal, ville', 'prospect', id)
+        element = Select('prospect', 'nom, adresse_postale, code_postal, ville',"id", id)
         self.nom_p = element[0]
         self.adresse_p = element[1]
         self.code_postal_p = str(element[2])
@@ -27,13 +27,13 @@ class Prospect:
 
 class Contact:
     def __init__(self, id):
-        element = Select('nom', 'contact', id)
+        element = Select('contact', 'nom',"id", id)
         self.nom_c = element[0]
 
 
 class Details_facture:
     def __init__(self, id):
-        element = Select('numero_facture, date_emission, montant', 'facture', id)
+        element = Select('facture','numero_facture, date_emission, montant',"id", id)
         self.numero_f = str(element[0])
         charADegager = [":", " "]
         dateAImplementer = str(element[1])
@@ -46,7 +46,7 @@ class Details_facture:
 
 class Prospectaccueil:
     def __init__(self, id):
-        element = Select('nom, numero_siret, adresse_postale, code_postal, ville, description, url', 'prospect', id)
+        element = Select( 'prospect','nom, numero_siret, adresse_postale, code_postal, ville, description, url',"id", id)
         self.nom_p = element[0]
         self.siret_p = str(element[1])
         self.adresse_p = element[2]

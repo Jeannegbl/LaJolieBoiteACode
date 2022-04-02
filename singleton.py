@@ -66,21 +66,34 @@ class DBSingleton:
         return results
 
 
-
-def Select(col, table, id):
+def Select(table, col, colonne_rech, id):
     db = DBSingleton.Instance()
-    sql = "SELECT " + col + " from " + table + " WHERE id=%s"
+    sql = "SELECT " + col + " from " + table + " WHERE " + colonne_rech + "=%s;"
     params: tuple = (id,)
     db.query(sql, params)
     return db.result[0]
 
 
-def Insert(col, table, params: tuple):
+def update(table, col, params: tuple, colonne_rech, id):
     db = DBSingleton.Instance()
-    insertions = ""
-    col_list=col.split(',')
+    col_list = col.split(',')
+    edits = ""
+    compteur = 0
+    for i in col_list:
+        edits = edits + str(i) + "= %s,"
+        compteur = compteur + 1
+    edits = edits[:-1]
+    sql = "UPDATE " + table + " SET " + edits + " WHERE " + colonne_rech + " = %s ;"
+    params: tuple = params + (id,)
+    db.query(sql, params)
+
+
+def Insert(table, col, params: tuple):
+    db = DBSingleton.Instance()
+    insertion_pourcent_s = ""
+    col_list = col.split(',')
     for _ in col_list:
-        insertions = insertions + "%s,"
-    insertions = insertions[:-1]
-    sql = "INSERT INTO " + table + "(" + col + ")VALUES (" + insertions + ")"
+        insertion_pourcent_s = insertion_pourcent_s + "%s,"
+    insertion_pourcent_s = insertion_pourcent_s[:-1]
+    sql = "INSERT INTO " + table + "(" + col + ")VALUES (" + insertion_pourcent_s + ")"
     db.query(sql, params)
