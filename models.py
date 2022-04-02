@@ -1,5 +1,4 @@
 from singleton import Select
-import os
 
 
 class Entreprise:
