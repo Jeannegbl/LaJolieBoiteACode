@@ -5,7 +5,7 @@ import os
 class Entreprise:
     def __init__(self, id):
         element = Select('nom, adresse_postale, code_postal, ville, cedex, numero_siren, telephone, email, IBAN',
-                         'entreprise',id)
+                         'entreprise', id)
         self.nom_e = element[0]
         self.adresse_e = element[1]
         self.code_postal_e = str(element[2])
@@ -36,10 +36,22 @@ class Details_facture:
     def __init__(self, id):
         element = Select('numero_facture, date_emission, montant', 'facture', id)
         self.numero_f = str(element[0])
-        charADegager=[":"," "]
-        dateAImplementer=str(element[1])
+        charADegager = [":", " "]
+        dateAImplementer = str(element[1])
         for i in range(len(charADegager)):
-            dateAImplementer=dateAImplementer.replace(charADegager[i],"")
-        self.date_emission_f=dateAImplementer
+            dateAImplementer = dateAImplementer.replace(charADegager[i], "")
+        self.date_emission_f = dateAImplementer
         print(self.date_emission_f)
         self.montant_f = str(element[2])
+
+
+class Prospectaccueil:
+    def __init__(self, id):
+        element = Select('nom, numero_siret, adresse_postale, code_postal, ville, description, url', 'prospect', id)
+        self.nom_p = element[0]
+        self.siret_p = element[1]
+        self.adresse_p = element[2]
+        self.code_postal_p = str(element[3])
+        self.ville_p = element[4]
+        self.desc_p = element[5]
+        self.url_p = element[6]

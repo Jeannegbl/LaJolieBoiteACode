@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="../static/connexion.css">
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <title>{{ title if title }}</title>
+    </head>
+    <body>
+        <div class="main">
+            <p class="sign" align="center">Connexion</p>
+            <form action="" class="form1" method="post">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.pseudo.label }}
+                        {{ form.pseudo(class="un") }}
+                    {{ form.mdp.label }}
+                        {{ form.mdp(class="pass") }}
+                </div>
+                {{ form.submit(class="submit") }}
+
+            </form>
+
+    </body>
+</html>

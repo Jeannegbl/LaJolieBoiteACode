@@ -1,4 +1,3 @@
-from singleton import *
 from docxtpl import DocxTemplate
 from models import *
 
