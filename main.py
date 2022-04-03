@@ -20,7 +20,6 @@ class Utilisateur:
         self.mdp = mdp
 
 
-# Sur cette ligne d'en dessous que tu dois mettre à la place des id, pseudos, et mdp les valeurs de la bdd dans la table utilisateur
 db = DBSingleton.Instance()
 users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
 utilisateurs = []
@@ -36,6 +35,7 @@ def before_request():
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
 
+
 @app.route('/', methods=['GET', 'POST'])
 def connexion():
     if request.method == 'POST':
@@ -44,7 +44,7 @@ def connexion():
         mdp = request.form['mdp']
 
         utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
-        if not utilisateur==[]:
+        if not utilisateur == []:
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
                 return redirect('/accueil')

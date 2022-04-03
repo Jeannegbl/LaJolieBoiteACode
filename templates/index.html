@@ -11,22 +11,24 @@
         <meta property="og:title" content="La Jolie Boîte à Code">
         <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='connexion.css') }}">
-        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap">
         <link rel="icon" type="png" href="{{ url_for('static', filename='logo.png') }}">
         <title>{{ title if title }}</title>
     </head>
 
     <body>
 
-        <div class="main">
-            <p class="sign" align="center">Connexion</p>
-            <form action="" class="form1" method="post">
+        <div class="conteneur">
+            <p class="titre" align="center">Connexion</p>
+            <form class="form" method="post">
                 {{ form.hidden_tag() }}
-                <div class="form-group">
+                <div>
                     {{ form.pseudo.label }}
-                        {{ form.pseudo(class="un") }}
+                        {{ form.pseudo(class="pseudo") }}
                     {{ form.mdp.label }}
-                        {{ form.mdp(class="pass") }}
+                        {{ form.mdp(class="mdp") }}
                 </div>
                 {{ form.submit(class="submit") }}
             </form>
