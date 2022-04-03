@@ -31,11 +31,11 @@ for i in users:
 
 @app.before_request
 def before_request():
-    g.utilisateur = None
+    g.utilisateur = False
     if 'utilisateur_id' in session:
-        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']][0]
-        g.utilisateur = utilisateur
-
+        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
+        g.utilisateur = utilisateur[0]
+    print(g.utilisateur)
 
 @app.route('/', methods=['GET', 'POST'])
 def connexion():
@@ -43,13 +43,13 @@ def connexion():
         session.pop('utilisateur_id', None)
         pseudo = request.form['pseudo']
         mdp = request.form['mdp']
-        print(mdp)
 
-        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo][0]
-        if utilisateur and utilisateur.mdp == mdp:
-            session['utilisateur_id'] = utilisateur.id
+        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
+        if not utilisateur==[]:
+            if utilisateur[0].mdp == mdp:
+                session['utilisateur_id'] = utilisateur[0].id
+                return redirect('/accueil')
             return redirect('/accueil')
-        return redirect('/accueil')
     form = LoginForm()
     return render_template('index.html', form=form, title='connexion')
 
