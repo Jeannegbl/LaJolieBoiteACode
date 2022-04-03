@@ -20,8 +20,13 @@ class Utilisateur:
         self.mdp = mdp
 
 
-#Sur cette ligne d'en dessous que tu dois mettre à la place des id, pseudos, et mdp les valeurs de la bdd dans la table utilisateur
-utilisateurs = [Utilisateur(id=1, pseudo='tst', mdp='tst')]
+# Sur cette ligne d'en dessous que tu dois mettre à la place des id, pseudos, et mdp les valeurs de la bdd dans la table utilisateur
+db = DBSingleton.Instance()
+users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
+utilisateurs = []
+for i in users:
+    globals()["Utilisateur%s" % str(i[0])] = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
+    utilisateurs.append(eval("Utilisateur%s" % i[0]))
 
 
 @app.before_request
@@ -38,6 +43,7 @@ def connexion():
         session.pop('utilisateur_id', None)
         pseudo = request.form['pseudo']
         mdp = request.form['mdp']
+        print(mdp)
 
         utilisateur = [x for x in utilisateurs if x.pseudo == pseudo][0]
         if utilisateur and utilisateur.mdp == mdp:
