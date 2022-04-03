@@ -1,28 +1,57 @@
-from models import *
 from config import Config
-from formulaires import RegisterForm
-from werkzeug.utils import redirect
+from formulaires import LoginForm
 from singleton import *
-from flask import render_template, Flask, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
     DateField
 from wtforms.validators import DataRequired
+from flask import Flask, render_template, redirect, request, session, g
 
 app = Flask(__name__)
 app.config.from_object(Config)
 Bootstrap(app)
 
 
+class Utilisateur:
+    def __init__(self, id, pseudo, mdp):
+        self.id = id
+        self.pseudo = pseudo
+        self.mdp = mdp
+
+
+#Sur cette ligne d'en dessous que tu dois mettre à la place des id, pseudos, et mdp les valeurs de la bdd dans la table utilisateur
+utilisateurs = [Utilisateur(id=1, pseudo='tst', mdp='tst')]
+
+
+@app.before_request
+def before_request():
+    g.utilisateur = None
+    if 'utilisateur_id' in session:
+        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']][0]
+        g.utilisateur = utilisateur
+
+
 @app.route('/', methods=['GET', 'POST'])
-def index():
-    form = RegisterForm()
-    return render_template('connexion.html', form=form, title='connexion')
+def connexion():
+    if request.method == 'POST':
+        session.pop('utilisateur_id', None)
+        pseudo = request.form['pseudo']
+        mdp = request.form['mdp']
+
+        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo][0]
+        if utilisateur and utilisateur.mdp == mdp:
+            session['utilisateur_id'] = utilisateur.id
+            return redirect('/accueil')
+        return redirect('/accueil')
+    form = LoginForm()
+    return render_template('index.html', form=form, title='connexion')
 
 
 @app.route('/accueil')
 def accueil():
+    if not g.utilisateur:
+        return redirect('/')
     connexion_unique = DBSingleton.Instance()
     element = "SELECT prospect.nom, COUNT(facture.id) AS 'Nombre de facture' FROM `prospect` LEFT JOIN facture ON facture.prospect_id = prospect.id GROUP BY prospect.nom ORDER BY prospect.nom ASC"
     prospects = connexion_unique.fetchall_simple(element)
