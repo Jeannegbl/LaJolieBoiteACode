@@ -1,12 +1,8 @@
 from models import *
-
 from config import Config
 from formulaires import RegisterForm
 from werkzeug.utils import redirect
-# le bijou
 from singleton import *
-
-# laFlaskerieNestJamaisFinie
 from flask import render_template, Flask, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
@@ -17,6 +13,7 @@ from wtforms.validators import DataRequired
 app = Flask(__name__)
 app.config.from_object(Config)
 Bootstrap(app)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
