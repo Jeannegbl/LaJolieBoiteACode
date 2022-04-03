@@ -1,9 +1,12 @@
 {% extends 'accueil.html' %}
-
 {% block titre %}<p class="titre">{{nom_prospect}}{% endblock %}</p>
-
+{% import "bootstrap/wtf.html" as wtf %}
 {% block section %}
+
 <section>
+    	<div class="container">
+        {{wtf.quick_form(barrederecherche)}}
+    </div>
     <table class="prospect">
         <tr>
             <th>NOM</th>
@@ -25,7 +28,7 @@
             <td>{{contact.8}}</td>
             {% if contact.6 == 1 %}
                 <td class="actif">ACTIF</td>
-            <td><a href="{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+            <td><a href="/{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
             {% else %}
                 <td class="inactif">INACTIF</td>
             {% endif %}
@@ -40,10 +43,10 @@
             </br>N° SIRET : {{information.0}}
         </p>
         {% endfor %}
-    <input class="retour" type="button" value="Retour" onclick="window.location.href='{{('accueil')}}';">
-    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='{{nom_prospect}}/inactif';">
+    <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
+    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/{{nom_prospect}}/inactif/filtre-off';">
     {% else %}
-    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="javascript:history.back(-1);">
+    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/{{nom_prospect}}/actif/filtre-off';">
     {% endif %}
 </section>
 {% endblock %}
