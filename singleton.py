@@ -65,6 +65,15 @@ class DBSingleton:
         mycursor.close()
         return results
 
+    def query_arguments(self, sql, args: tuple = ()):
+        mycursor = self.conn.cursor(buffered=True)
+        mycursor.execute(sql, args)
+        return mycursor
+
+    def commit(self, sql, args):
+        self.query_arguments(sql, args)
+        self.conn.commit()
+
 
 def Select(table, col, colonne_rech, id):
     db = DBSingleton.Instance()

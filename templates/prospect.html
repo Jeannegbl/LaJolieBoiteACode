@@ -17,6 +17,7 @@
             <th>COMMENTAIRES</th>
             <th>ACTIF/INACTIF</th>
             <th></th>
+            <th></th>
         </tr>
         {% for contact in contacts %}
         <tr>
@@ -28,14 +29,17 @@
             <td>{{contact.8}}</td>
             {% if contact.6 == 1 %}
                 <td class="actif">ACTIF</td>
-            <td><a href="/{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+                <td><a href="/actif/{{contact.1}}/changer"><button  class="boutton">Contact inactif</button></a></td>
             {% else %}
                 <td class="inactif">INACTIF</td>
+                <td><a href="/inactif/{{contact.1}}/changer"><button  class="boutton">Contact actif</button></a></td>
+            {% endif %}
+            {% if contact.8 != 0 %}
+            <td><a href="/{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
             {% endif %}
         </tr>
         {% endfor %}
     </table>
-    {% if activiter == 1 %}
         {% for information in info_prospect %}
         <p class="retour">Adresse : {{information.1}} à {{information.3}} {{information.2}}
             </br>Description : {{information.4}}
@@ -44,6 +48,7 @@
         </p>
         {% endfor %}
     <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
+    {% if activiter == 1 %}
     <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/{{nom_prospect}}/inactif/filtre-off';">
     {% else %}
     <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/{{nom_prospect}}/actif/filtre-off';">

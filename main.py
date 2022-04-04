@@ -110,5 +110,25 @@ def contact(contact, prospect):
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
 
 
+@app.route('/<statut>/<contact>/changer', methods=['GET', 'POST'])
+def changer(statut, contact):
+    if statut == "inactif":
+        connexion_unique = DBSingleton.Instance()
+        changement_statut = 1
+        nom_contact = contact
+        requete_sql = "UPDATE contact SET statut = %s WHERE contact.nom = %s"
+        argument_sql = (changement_statut, nom_contact)
+        connexion_unique.commit(requete_sql, argument_sql)
+        return redirect('/accueil')
+    else:
+        connexion_unique = DBSingleton.Instance()
+        changement_statut = 0
+        nom_contact = contact
+        requete_sql = "UPDATE contact SET statut = %s WHERE contact.nom = %s"
+        argument_sql = (changement_statut, nom_contact)
+        connexion_unique.commit(requete_sql, argument_sql)
+        return redirect('/accueil')
+
+
 if __name__ == "__main__":
     app.run(debug=True)
