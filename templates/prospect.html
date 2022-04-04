@@ -1,12 +1,15 @@
 {% extends 'accueil.html' %}
-{% block titre %}{% for prospect in nom_prospect %}<p class="titre">{{prospect.0}}</p>{% endfor %}{% endblock %}
+{% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block section %}
 
 <section>
-    	<div class="container">
-        {{wtf.quick_form(barrederecherche)}}
-    </div>
+    	<div class="container-filtre">
+            <form class="form form-horizontal" method="post" role="form">
+                {{wtf.form_field(barrederecherche.filtreDefini,class="champs-filtre")}}
+                {{wtf.form_field(barrederecherche.valider, class="btnsub")}}
+            </form>
+        </div>
     <table class="prospect">
         <tr>
             <th>NOM</th>
@@ -33,9 +36,9 @@
             {% else %}
                 <td class="inactif">INACTIF</td>
             {% endif %}
-            <td><a href="/changer-statut/{{id_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
+            <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
             {% if contact.8 != 0 %}
-            <td><a href="/contact/{{id_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+            <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
             {% endif %}
         </tr>
         {% endfor %}
@@ -49,9 +52,9 @@
         {% endfor %}
     <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
     {% if activiter == 1 %}
-    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{id_prospect}}/inactif/filtre-off';">
+    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
     {% elif activiter==0 %}
-    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{id_prospect}}/actif/filtre-off';">
+    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
     {% endif %}
 </section>
 {% endblock %}
