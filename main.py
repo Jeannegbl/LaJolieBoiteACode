@@ -107,9 +107,15 @@ def contact(contact, prospect):
     liste_commentaires = connexion_unique.fetchall_simple(element_3)
     return render_template('contact.html', contacts=contacts, nom_prospect=prospect, contact=contact,
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
-@app.route('/changer-statut/<prospect>/<contact>')
-def  changement_statut(prospect,contact):
-    pass
-
+@app.route('/changer-statut/<prospect>/<contact_id>')
+def  changement_statut(prospect,contact_id):
+    statut_actuel=Select("contact","statut","id",contact_id)[0]
+    print(statut_actuel)
+    if statut_actuel==0:
+        update("contact","statut",(1,),"id",contact_id)
+        return redirect("/menu-entreprises/"+prospect+"/actif/filtre-off")
+    if  statut_actuel==1:
+        update("contact","statut",(0,),"id",contact_id)
+        return redirect("/menu-entreprises/"+prospect+"/inactif/filtre-off")
 if __name__ == "__main__":
     app.run(debug=True)
