@@ -19,7 +19,7 @@ class Utilisateur:
         self.pseudo = pseudo
         self.mdp = mdp
 
-
+#tableau contenant la liste des utilisateurs avec le droit d'acceder au site
 db = DBSingleton.Instance()
 users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
 utilisateurs = []
@@ -35,7 +35,6 @@ def before_request():
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
 
-
 @app.route('/', methods=['GET', 'POST'])
 def connexion():
     if request.method == 'POST':
@@ -44,7 +43,7 @@ def connexion():
         mdp = request.form['mdp']
 
         utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
-        if not utilisateur == []:
+        if not utilisateur==[]:
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
                 return redirect('/accueil')
@@ -68,7 +67,7 @@ class BarreDeRechercheFiltre(FlaskForm):
     valider = SubmitField('Valider')
 
 
-@app.route('/<prospect>/<statut>/<recherche>', methods=['GET', 'POST'])
+@app.route('/menu-entreprises/<prospect>/<statut>/<recherche>', methods=['GET', 'POST'])
 def prospect(prospect, statut, recherche):
     filtre = BarreDeRechercheFiltre()
     if filtre.valider.data == True:
@@ -97,7 +96,7 @@ def prospect(prospect, statut, recherche):
                            activiter=activiter, barrederecherche=filtre)
 
 
-@app.route('/<prospect>/contact/<contact>')
+@app.route('/contact/<prospect>/<contact>')
 def contact(contact, prospect):
     connexion_unique = DBSingleton.Instance()
     element = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id WHERE prospect.nom = '%s' AND statut = '0' GROUP BY contact.nom" % prospect
@@ -108,27 +107,9 @@ def contact(contact, prospect):
     liste_commentaires = connexion_unique.fetchall_simple(element_3)
     return render_template('contact.html', contacts=contacts, nom_prospect=prospect, contact=contact,
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
-
-
-@app.route('/<statut>/<contact>/changer', methods=['GET', 'POST'])
-def changer(statut, contact):
-    if statut == "inactif":
-        connexion_unique = DBSingleton.Instance()
-        changement_statut = 1
-        nom_contact = contact
-        requete_sql = "UPDATE contact SET statut = %s WHERE contact.nom = %s"
-        argument_sql = (changement_statut, nom_contact)
-        connexion_unique.commit(requete_sql, argument_sql)
-        return redirect('/accueil')
-    else:
-        connexion_unique = DBSingleton.Instance()
-        changement_statut = 0
-        nom_contact = contact
-        requete_sql = "UPDATE contact SET statut = %s WHERE contact.nom = %s"
-        argument_sql = (changement_statut, nom_contact)
-        connexion_unique.commit(requete_sql, argument_sql)
-        return redirect('/accueil')
-
+@app.route('/changer-statut/<prospect>/<contact>')
+def  changement_statut(prospect,contact):
+    pass
 
 if __name__ == "__main__":
     app.run(debug=True)

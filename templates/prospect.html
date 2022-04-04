@@ -29,13 +29,13 @@
             <td>{{contact.8}}</td>
             {% if contact.6 == 1 %}
                 <td class="actif">ACTIF</td>
-                <td><a href="/actif/{{contact.1}}/changer"><button  class="boutton">Contact inactif</button></a></td>
+
             {% else %}
                 <td class="inactif">INACTIF</td>
-                <td><a href="/inactif/{{contact.1}}/changer"><button  class="boutton">Contact actif</button></a></td>
             {% endif %}
+            <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Contact inactif</button></a></td>
             {% if contact.8 != 0 %}
-            <td><a href="/{{nom_prospect}}/contact/{{contact.1}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+            <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
             {% endif %}
         </tr>
         {% endfor %}
@@ -49,9 +49,9 @@
         {% endfor %}
     <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
     {% if activiter == 1 %}
-    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/{{nom_prospect}}/inactif/filtre-off';">
-    {% else %}
-    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/{{nom_prospect}}/actif/filtre-off';">
+    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
+    {% elif activiter==0 %}
+    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
     {% endif %}
 </section>
 {% endblock %}
