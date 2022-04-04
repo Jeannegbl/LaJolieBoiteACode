@@ -1,6 +1,6 @@
 {% extends 'accueil.html' %}
 
-{% block titre %}<p class="titre">{{nom_prospect}}{% endblock %}</p>
+{% block titre %}{% for prospect_contact in nom_prospect_contact %}<p class="titre">{{prospect_contact.0}} - {{prospect_contact.1}}</p>{% endfor %}{% endblock %}
 
 {% block section %}
 <section>

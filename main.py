@@ -57,7 +57,7 @@ def accueil():
     if not g.utilisateur:
         return redirect('/')
     connexion_unique = DBSingleton.Instance()
-    element = "SELECT prospect.nom, COUNT(facture.id) AS 'Nombre de facture' FROM `prospect` LEFT JOIN facture ON facture.prospect_id = prospect.id GROUP BY prospect.nom ORDER BY prospect.nom ASC"
+    element = "SELECT prospect.nom, COUNT(facture.id) AS 'Nombre de facture', prospect.id FROM `prospect` LEFT JOIN facture ON facture.prospect_id = prospect.id GROUP BY prospect.nom ORDER BY prospect.nom ASC"
     prospects = connexion_unique.fetchall_simple(element)
     return render_template('accueil.html', prospects=prospects)
 
@@ -71,7 +71,7 @@ class BarreDeRechercheFiltre(FlaskForm):
 def prospect(prospect, statut, recherche):
     filtre = BarreDeRechercheFiltre()
     if filtre.valider.data == True:
-        return redirect("/" + prospect + "/" + statut + "/" + filtre.filtreDefini.data)
+        return redirect("/menu-entreprises/" + prospect + "/" + statut + "/" + filtre.filtreDefini.data)
     # filtre en fonction du statut
     if statut == "inactif":
         bool_statut = 0
@@ -85,28 +85,33 @@ def prospect(prospect, statut, recherche):
     connexion_unique = DBSingleton.Instance()
     sql = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN " \
           "commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id " \
-          "WHERE prospect.nom = %s AND statut = '" + str(bool_statut) + "' " + sqlfiltre + " GROUP BY contact.nom"
+          "WHERE prospect.id = %s AND statut = '" + str(bool_statut) + "' " + sqlfiltre + " GROUP BY contact.nom"
     params: tuple = (prospect,)
     contacts = connexion_unique.query(sql, params)
     element_2 = "SELECT prospect.numero_siret, prospect.adresse_postale, prospect.code_postal, prospect.ville, " \
-                "prospect.description, prospect.url FROM `prospect` WHERE prospect.nom = '%s' " % prospect
+                "prospect.description, prospect.url FROM `prospect` WHERE prospect.id = '%s' " % prospect
     info_prospect = connexion_unique.fetchall_simple(element_2)
     activiter = bool_statut
-    return render_template('prospect.html', contacts=contacts, nom_prospect=prospect, info_prospect=info_prospect,
+    sql_nom_prospect = "SELECT prospect.nom FROM prospect WHERE prospect.id = %s" % prospect
+    nom_prospect = connexion_unique.fetchall_simple(sql_nom_prospect)
+    return render_template('prospect.html', contacts=contacts, nom_prospect=nom_prospect, id_prospect=prospect, info_prospect=info_prospect,
                            activiter=activiter, barrederecherche=filtre)
 
 
 @app.route('/contact/<prospect>/<contact>')
 def contact(contact, prospect):
     connexion_unique = DBSingleton.Instance()
-    element = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id WHERE prospect.nom = '%s' AND statut = '0' GROUP BY contact.nom" % prospect
+    element = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id WHERE prospect.id = '%s' AND statut = '0' GROUP BY contact.nom" % prospect
     contacts = connexion_unique.fetchall_simple(element)
-    element_2 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.nom = '%s' ORDER BY date_creation DESC LIMIT 1" % contact
+    element_2 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.id = '%s' ORDER BY date_creation DESC LIMIT 1" % contact
     commentaire = connexion_unique.fetchall_simple(element_2)
-    element_3 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.nom = '%s' ORDER BY date_creation DESC LIMIT 100 OFFSET 1 " % contact
+    element_3 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.id = '%s' ORDER BY date_creation DESC LIMIT 100 OFFSET 1 " % contact
     liste_commentaires = connexion_unique.fetchall_simple(element_3)
-    return render_template('contact.html', contacts=contacts, nom_prospect=prospect, contact=contact,
+    sql_nom_prospect_contact = "SELECT prospect.nom, contact.nom FROM prospect JOIN contact ON contact.prospect_id = prospect.id WHERE contact.id = %s" % contact
+    nom_prospect_contact = connexion_unique.fetchall_simple(sql_nom_prospect_contact)
+    return render_template('contact.html', contacts=contacts, nom_prospect_contact=nom_prospect_contact, id_prospect=prospect, contact=contact,
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
+
 @app.route('/changer-statut/<prospect>/<contact_id>')
 def  changement_statut(prospect,contact_id):
     statut_actuel=Select("contact","statut","id",contact_id)[0]
@@ -117,5 +122,6 @@ def  changement_statut(prospect,contact_id):
     if  statut_actuel==1:
         update("contact","statut",(0,),"id",contact_id)
         return redirect("/menu-entreprises/"+prospect+"/inactif/filtre-off")
+
 if __name__ == "__main__":
     app.run(debug=True)
