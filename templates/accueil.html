@@ -1,31 +1,6 @@
-<!DOCTYPE html>
-
-<html lang="fr">
-
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
-        <meta property="og:image" content="{{ url_for('static', filename='logo.png') }}">
-        <meta property="og:description" content="Venez profiter de nos services dans l'informatique !">
-        <meta property="og:title" content="La Jolie Boîte à Code">
-        <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='accueil.css') }}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap">
-        <link rel="icon" type="png" href="{{ url_for('static', filename='logo.png') }}">
-        <title>Accueil</title>
-    </head>
-
-    <body>
-
-        <header class="header">
-            <img class="logo" src="{{ url_for('static', filename='logo.png') }}">
-            {% block titre %}<p class="titre">La jolie boite à code</p>{% endblock %}
-        </header>
-
-        {% block section %}
+{% extends 'base.html' %}
+ 
+{% block content %}
         <section>
             <table class="prospect">
                 <tr>
@@ -42,8 +17,4 @@
                 {% endfor %}
             </table>
         </section>
-        {% endblock %}
-
-    </body>
-    
-</html>
+{% endblock %}
