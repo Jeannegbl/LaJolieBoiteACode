@@ -1,0 +1,8 @@
+{% extends 'accueil.html' %}
+{% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block section %}
+<iframe src="{{urlpdf}}#toolbar=0" style="height:78vh; width:100vw;"></iframe>
+<input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
+
+{% endblock %}

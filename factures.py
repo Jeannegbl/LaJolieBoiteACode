@@ -1,8 +1,18 @@
 from docxtpl import DocxTemplate
 from models import *
+from docx2pdf import convert
+import pythoncom
+import os
+from os.path import join, dirname
+from dotenv import load_dotenv
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv('.env')
+
 
 
 class Facture:
+
     def __init__(self, entreprise: Entreprise, prospect: Prospect, contact: Contact, details_facture: Details_facture):
         self.entreprise = entreprise
         self.prospect = prospect
@@ -10,6 +20,9 @@ class Facture:
         self.details_facture = details_facture
 
     def generate(self):
+
+        pythoncom.CoInitialize()
+        document = DocxTemplate("Factures/template/template.docx")
         template_values = {
             'nom_e': self.entreprise.nom_e,
             'adresse_e': self.entreprise.adresse_e,
@@ -27,16 +40,16 @@ class Facture:
             'ville_p': self.prospect.ville_p,
             'numero_f': self.details_facture.numero_f,
             'date_f': self.details_facture.date_emission_f,
-            'montant_f': self.details_facture.montant_f
+            'montant_f': str(self.details_facture.montant_f)
         }
-        print(template_values)
+        self.nomFacture="facture_" + self.details_facture.numero_f +"_"+ self.details_facture.date_emission_f
         document.render(template_values)
-        document.save(
-            "Factures/facture_" + self.details_facture.numero_f + self.details_facture.date_emission_f + ".docx")
+        print(os.environ.get("chemin_complet_dossier_factures")+self.nomFacture +".docx")
+        document.save(os.environ.get("chemin_complet_dossier_factures")+self.nomFacture+".docx")
+        convert (os.environ.get("chemin_complet_dossier_factures")+self.nomFacture +".docx")
 
 if __name__ == "__main__":
-    template_values = {}
-    document = DocxTemplate("Factures/template/template.docx")
+
     LaJolieBoiteACode = Entreprise(1)
     Prospect_test = Prospect(1)
     Contact_test = Contact(1)

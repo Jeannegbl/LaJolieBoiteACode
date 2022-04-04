@@ -40,7 +40,6 @@ class Details_facture:
         for i in range(len(charADegager)):
             dateAImplementer = dateAImplementer.replace(charADegager[i], "")
         self.date_emission_f = dateAImplementer
-        print(self.date_emission_f)
         self.montant_f = str(element[2])
 
 

@@ -2,3 +2,10 @@
 pseudo=""
 password=""
 database=""
+
+#id de l'entreprise a qui appartient le site
+entreprise_id=""
+
+#lien vers le dossier factures(qui doit etre sur votre localhost exemple:"http://localhost/jolieboiteacode_factures/")
+url_dossier_factures=""
+chemin_complet_dossier_factures=""
