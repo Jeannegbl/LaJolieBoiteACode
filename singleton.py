@@ -75,12 +75,12 @@ class DBSingleton:
         self.conn.commit()
 
 
-def Select(table, col, colonne_rech, id):
+def select(table, col, colonne_rech, id):
     db = DBSingleton.Instance()
     sql = "SELECT " + col + " from " + table + " WHERE " + colonne_rech + "=%s;"
     params: tuple = (id,)
     db.query(sql, params)
-    return db.result[0]
+    return db.result
 
 
 def update(table, col, params: tuple, colonne_rech, id):

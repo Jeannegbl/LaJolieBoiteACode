@@ -7,7 +7,7 @@ from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
     DateField, EmailField, TelField, DecimalField, TextAreaField
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from factures import *
 import os
 
@@ -41,11 +41,11 @@ def before_request():
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
-        session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
-        session["instant"]=datetime.now()+timedelta(hours=0)
-        print(session["instant"],session['heure_expiration'])
-        if session["instant"]>session['heure_expiration'][:7]:
-            return redirect("/deconnexion")
+        # session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
+        # session["instant"]=datetime.now()+timedelta(hours=0)
+        # print(session["instant"],session['heure_expiration'])
+        # if session["instant"]>session['heure_expiration'][:7]:
+        # return redirect("/deconnexion")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -60,8 +60,7 @@ def connexion():
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
                 instant = datetime.now()
-                print(instant)
-                session['heure_heure_connexion']= instant
+                session['heure_connexion'] = instant
                 return redirect('/accueil')
             return redirect('/accueil')
     form = LoginForm()
@@ -134,8 +133,7 @@ def contact(contact, prospect):
 
 @app.route('/changer-statut/<prospect>/<contact_id>')
 def changement_statut(prospect, contact_id):
-    statut_actuel = Select("contact", "statut", "id", contact_id)[0]
-    print(statut_actuel)
+    statut_actuel = select("contact", "statut", "id", contact_id)[0][0]
     if statut_actuel == 0:
         update("contact", "statut", (1,), "id", contact_id)
         return redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
@@ -153,7 +151,7 @@ class FormulaireFacturation(FlaskForm):
 def genration_factures(prospect_nom, contact_id):
     formFacture = FormulaireFacturation()
     if formFacture.valider.data == True:
-        prospect_id = Select("prospect", "id", "nom", prospect_nom)[0]
+        prospect_id = select("prospect", "id", "nom", prospect_nom)[0][0]
         entreprise_id = os.environ.get('entreprise_id')
         date = str(datetime.now())[:-7]
 
@@ -162,11 +160,10 @@ def genration_factures(prospect_nom, contact_id):
         for path in os.listdir(dir):
             if os.path.isfile(os.path.join(dir, path)):
                 nombre_factures += 1
-        print(nombre_factures)
         params: tuple = (
         nombre_factures + 1, date, formFacture.montant_facture.data, contact_id, prospect_id, entreprise_id)
         insert("facture", "numero_facture,date_emission,montant,contact_id,prospect_id,entreprise_id", params)
-        facture_id = Select("facture", "id", "date_emission", date)[0]
+        facture_id = select("facture", "id", "date_emission", date)[0][0]
 
         entreprise = Entreprise(os.environ.get('entreprise_id'))
         prospect = Prospect(prospect_id)
@@ -179,6 +176,23 @@ def genration_factures(prospect_nom, contact_id):
     return render_template("facturemontant.html", formFacture=formFacture)
 
 
+@app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
+def apercu_factures(nom_prospect, id_contact):
+    listeFactures=[]
+    i=0
+    for _ in select("facture", "id", "contact_id", id_contact):
+        details_facture = Details_facture(select("facture", "id", "contact_id", id_contact)[i][0])
+        entreprise = Entreprise(os.environ.get('entreprise_id'))
+        prospect = Prospect(select("prospect", "id", "nom", nom_prospect)[0][0])
+        contact = Contact(id_contact)
+        facture=Facture(entreprise,prospect,contact,details_facture)
+        listeFactures.append(facture.nomFacture)
+        print(listeFactures, i)
+        print(select("facture", "id", "contact_id", id_contact)[0])
+        i+=1
+
+
+
 @app.route('/apercu_facture/<nom_facture>', methods=['GET', 'POST'])
 def apercu_facture(nom_facture):
     urlpdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
@@ -187,8 +201,9 @@ def apercu_facture(nom_facture):
 
 @app.route('/effacer-prospect/<prospect>')
 def effacer_prospect(prospect):
-    id_prospect = Select("prospect", "id", "nom", prospect)[0]
-    Delete("prospect", "id", id_prospect)
+    id_prospect = select("prospect", "id", "nom", prospect)[0][0]
+    print(id_prospect)
+    #Delete("prospect", "id", id_prospect)
     return redirect("/accueil")
 
 
@@ -235,7 +250,7 @@ def ajouter_contact(prospect):
         poste = request.form['poste']
         telephone = request.form['telephone']
         statut = '1'
-        id_prospect = Select("prospect", "id", "nom", prospect)[0]
+        id_prospect = select("prospect", "id", "nom", prospect)[0][0]
         params: tuple = (nom, prenom, email, poste, telephone, statut, id_prospect)
         Insert("contact", "nom, prenom, email, poste, telephone, statut, prospect_id", params)
         return redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
@@ -243,9 +258,10 @@ def ajouter_contact(prospect):
 
 
 @app.route('/ajouter-commentaire/<prospect>/<id_contact>', methods=['GET', 'POST'])
-def ajouter_commentaire(prospect,id_contact):
+def ajouter_commentaire(prospect, id_contact):
     class Ajoutercommentaire(FlaskForm):
         commentaire = TextAreaField('commentaire', validators=[DataRequired()])
+
     form = Ajoutercommentaire()
     if form.validate_on_submit():
         commentaire = request.form['commentaire']
@@ -255,6 +271,7 @@ def ajouter_commentaire(prospect,id_contact):
         Insert("commentaire", "utilisateur_id, contact_id, description", params)
         return redirect("/contact/" + prospect + "/" + id_contact)
     return render_template('ajouter-commentaire.html', form=form)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
