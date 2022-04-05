@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <form method="POST">
+            <fieldset>
+                {{ form.csrf_token }}
+                <div><label>Nom</label>{{ form.nom(size=20) }}</div>
+                <div><label>SIRET</label>{{ form.siret(size=20) }}</div>
+                <div><label>Adresse postale</label>{{ form.adresse(size=20) }}</div>
+                <div><label>Code postal</label>{{ form.codepostal(size=20) }}</div>
+                <div><label>Ville</label>{{ form.ville(size=20) }}</div>
+                <div><label>Description</label>{{ form.description(size=20) }}</div>
+                <div><label>URL</label>{{ form.url(size=20) }}</div>
+                <input type="submit" value="Créer">
+            </fieldset>
+        </form>
+    </body>
+</html>

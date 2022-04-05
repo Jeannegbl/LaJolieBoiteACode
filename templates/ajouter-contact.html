@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <form method="POST">
+            <fieldset>
+                {{ form.csrf_token }}
+                <div><label>Nom</label>{{ form.nom(size=20) }}</div>
+                <div><label>Prénom</label>{{ form.prenom(size=20) }}</div>
+                <div><label>Email</label>{{ form.email(size=20) }}</div>
+                <div><label>Poste</label>{{ form.poste(size=20) }}</div>
+                <div><label>Téléphone</label>{{ form.telephone(size=20) }}</div>
+                <input type="submit" value="Créer">
+            </fieldset>
+        </form>
+    </body>
+</html>
