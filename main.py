@@ -26,26 +26,18 @@ class Utilisateur:
         self.mdp = mdp
 
 
-# tableau contenant la liste des utilisateurs avec le droit d'acceder au site
-db = DBSingleton.Instance()
-users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
-utilisateurs = []
-for i in users:
-    globals()["Utilisateur%s" % str(i[0])] = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
-    utilisateurs.append(eval("Utilisateur%s" % i[0]))
+
+def get_user_from_db(pseudo):
+    db = DBSingleton.Instance()
+    users = db.fetchall_simple("SELECT id,login,mot_de_passe as mdp FROM utilisateur WHERE login = '%s'" % pseudo)
+    return Utilisateur(*users[0]) if len(users) else None
 
 
 @app.before_request
 def before_request():
     g.utilisateur = False
     if 'utilisateur_id' in session:
-        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
-        g.utilisateur = utilisateur[0]
-        # session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
-        # session["instant"]=datetime.now()+timedelta(hours=0)
-        # print(session["instant"],session['heure_expiration'])
-        # if session["instant"]>session['heure_expiration'][:7]:
-        # return redirect("/deconnexion")
+        g.utilisateur = get_user_from_db(session['pseudo'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -55,14 +47,15 @@ def connexion():
         pseudo = request.form['pseudo']
         mdp = request.form['mdp']
 
-        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
-        if not utilisateur == []:
-            if utilisateur[0].mdp == mdp:
-                session['utilisateur_id'] = utilisateur[0].id
+        utilisateur = get_user_from_db(pseudo)
+        if utilisateur:
+            print(utilisateur)
+            if utilisateur.mdp == mdp:
+                session['utilisateur_id'] = utilisateur.id
+                session['pseudo'] = utilisateur.pseudo
                 instant = datetime.now()
                 session['heure_connexion'] = instant
                 return redirect('/accueil')
-            return redirect('/accueil')
     form = LoginForm()
     return render_template('index.html', form=form, title='connexion')
 
@@ -70,7 +63,8 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     del session['utilisateur_id']
-    del session['heure_expiration']
+    if 'heure_expiration' in session :
+        del session['heure_expiration']
     return redirect('/')
 
 
