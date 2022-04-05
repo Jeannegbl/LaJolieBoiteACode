@@ -39,6 +39,7 @@ for i in users:
 
 @app.before_request
 def before_request():
+    g.utilisateur = False
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
