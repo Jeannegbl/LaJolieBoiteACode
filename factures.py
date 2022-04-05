@@ -22,7 +22,7 @@ class Facture:
 
     def generate(self):
 
-        pythoncom.CoInitialize()
+        #pythoncom.CoInitialize()
         document = DocxTemplate("Factures/template/template.docx")
         template_values = {
             'nom_e': self.entreprise.nom_e,

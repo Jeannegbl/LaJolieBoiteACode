@@ -48,6 +48,8 @@ def connexion():
         mdp = request.form['mdp']
 
         utilisateur = get_user_from_db(pseudo)
+        session.permanent = False
+        app.permanent_session_lifetime = timedelta(hours=1)
         if utilisateur:
             print(utilisateur)
             if utilisateur.mdp == mdp:
@@ -85,6 +87,8 @@ class BarreDeRechercheFiltre(FlaskForm):
 
 @app.route('/menu-entreprises/<prospect>/<statut>/<recherche>', methods=['GET', 'POST'])
 def prospect(prospect, statut, recherche):
+    if not g.utilisateur:
+        return redirect('/')
     filtre = BarreDeRechercheFiltre()
     if filtre.valider.data == True:
         return redirect("/menu-entreprises/" + prospect + "/" + statut + "/" + filtre.filtreDefini.data)
@@ -114,6 +118,8 @@ def prospect(prospect, statut, recherche):
 
 @app.route('/contact/<prospect>/<contact>')
 def contact(contact, prospect):
+    if not g.utilisateur:
+        return redirect('/')
     connexion_unique = DBSingleton.Instance()
     element = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id WHERE prospect.nom = '%s' AND statut = '0' GROUP BY contact.nom" % prospect
     contacts = connexion_unique.fetchall_simple(element)
@@ -127,6 +133,8 @@ def contact(contact, prospect):
 
 @app.route('/changer-statut/<prospect>/<contact_id>')
 def changement_statut(prospect, contact_id):
+    if not g.utilisateur:
+        return redirect('/')
     statut_actuel = select("contact", "statut", "id", contact_id)[0][0]
     if statut_actuel == 0:
         update("contact", "statut", (1,), "id", contact_id)
@@ -143,6 +151,8 @@ class FormulaireFacturation(FlaskForm):
 
 @app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
 def genration_factures(prospect_nom, contact_id):
+    if not g.utilisateur:
+        return redirect('/')
     formFacture = FormulaireFacturation()
     if formFacture.valider.data == True:
         prospect_id = select("prospect", "id", "nom", prospect_nom)[0][0]
@@ -172,6 +182,8 @@ def genration_factures(prospect_nom, contact_id):
 
 @app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
 def apercu_factures(nom_prospect, id_contact):
+    if not g.utilisateur:
+        return redirect('/')
     listeFactures=[]
     i=0
     for _ in select("facture", "id", "contact_id", id_contact):
@@ -189,12 +201,16 @@ def apercu_factures(nom_prospect, id_contact):
 
 @app.route('/apercu_facture/<nom_facture>', methods=['GET', 'POST'])
 def apercu_facture(nom_facture):
+    if not g.utilisateur:
+        return redirect('/')
     urlpdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
     return render_template("apercufacture.html", urlpdf=urlpdf)
 
 
 @app.route('/effacer-prospect/<prospect>')
 def effacer_prospect(prospect):
+    if not g.utilisateur:
+        return redirect('/')
     id_prospect = select("prospect", "id", "nom", prospect)[0][0]
     delete("prospect", "id", id_prospect)
     return redirect("/accueil")
@@ -202,6 +218,8 @@ def effacer_prospect(prospect):
 
 @app.route('/ajouter-prospect', methods=['GET', 'POST'])
 def ajouter_prospect():
+    if not g.utilisateur:
+        return redirect('/')
     class Ajouterprospect(FlaskForm):
         nom = StringField('nom', validators=[DataRequired()])
         siret = DecimalField('siret', validators=[DataRequired()])
@@ -228,6 +246,8 @@ def ajouter_prospect():
 
 @app.route('/ajouter-contact/<prospect>', methods=['GET', 'POST'])
 def ajouter_contact(prospect):
+    if not g.utilisateur:
+        return redirect('/')
     class Ajoutercontact(FlaskForm):
         nom = StringField('nom', validators=[DataRequired()])
         prenom = StringField('prenom', validators=[DataRequired()])
@@ -252,6 +272,8 @@ def ajouter_contact(prospect):
 
 @app.route('/ajouter-commentaire/<prospect>/<id_contact>', methods=['GET', 'POST'])
 def ajouter_commentaire(prospect, id_contact):
+    if not g.utilisateur:
+        return redirect('/')
     class Ajoutercommentaire(FlaskForm):
         commentaire = TextAreaField('commentaire', validators=[DataRequired()])
 
