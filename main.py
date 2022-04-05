@@ -86,7 +86,7 @@ def accueil():
 
 class BarreDeRechercheFiltre(FlaskForm):
     filtreDefini = StringField("Filtrer les contacts", validators=[DataRequired()])
-    valider = SubmitField('Valider')
+    valider = SubmitField('Rechercher')
 
 
 @app.route('/menu-entreprises/<prospect>/<statut>/<recherche>', methods=['GET', 'POST'])
