@@ -202,8 +202,7 @@ def apercu_facture(nom_facture):
 @app.route('/effacer-prospect/<prospect>')
 def effacer_prospect(prospect):
     id_prospect = select("prospect", "id", "nom", prospect)[0][0]
-    print(id_prospect)
-    #Delete("prospect", "id", id_prospect)
+    delete("prospect", "id", id_prospect)
     return redirect("/accueil")
 
 
