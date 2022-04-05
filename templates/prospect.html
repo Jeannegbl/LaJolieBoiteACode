@@ -1,62 +1,66 @@
 {% extends 'accueil.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
+<div class="conteneur">
+    <section>
+            <div class="container-filtre">
+                <form class="form form-horizontal" method="post" role="form">
+                    {{wtf.form_field(barrederecherche.filtreDefini,class="champs-filtre")}}
+                    {{wtf.form_field(barrederecherche.valider, class="btnsub")}}
+                </form>
+            </div>
+        <table class="prospect">
+            <tr>
+                <th class="espace">NOM</th>
+                <th class="espace">PRÉNOM</th>
+                <th class="espace">EMAIL</th>
+                <th class="espace">POSTE</th>
+                <th class="espace">TÉLÉPHONE</th>
+                <th class="espace">COMMENTAIRES</th>
+                <th class="espace">ACTIF/INACTIF</th>
+                <th class="espace"></th>
+                <th class="espace"></th>
+                <th class="espace"></th>
+                <th class="espace"></th>
+            </tr>
+            {% for contact in contacts %}
+            <tr>
+                <td>{{contact.1}}</td>
+                <td>{{contact.2}}</td>
+                <td>{{contact.3}}</td>
+                <td>{{contact.4}}</td>
+                <td>{{contact.5}}</td>
+                <td>{{contact.8}}</td>
+                {% if contact.6 == 1 %}
+                    <td class="actif">ACTIF</td>
 
-<section>
-    	<div class="container-filtre">
-            <form class="form form-horizontal" method="post" role="form">
-                {{wtf.form_field(barrederecherche.filtreDefini,class="champs-filtre")}}
-                {{wtf.form_field(barrederecherche.valider, class="btnsub")}}
-            </form>
+                {% else %}
+                    <td class="inactif">INACTIF</td>
+                {% endif %}
+                <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
+                <td><a href="/ajouter-commentaire/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Ajouter un commentaire</button></a></td>
+                {% if contact.8 != 0 %}
+                <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+                {% endif %}
+                <td><a href="/generer_facture/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Generer une facture</button></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+            {% for information in info_prospect %}
+            <p class="retour">Adresse : {{information.1}} à {{information.3}} {{information.2}}
+                </br>Description : {{information.4}}
+                </br>Site : <a  class="url" href="{{information.5}}" target="_blank">{{information.5}}</a>
+                </br>N° SIRET : {{information.0}}
+            </p>
+            {% endfor %}
+        <div class="centrer-espacer">
+            <input  class="retour-3 margin" type="button" value="Ajouter contact" onclick="window.location.href='/ajouter-contact/{{nom_prospect}}';">
+            {% if activiter == 1 %}
+            <input class="retour-2 margin" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
+            {% elif activiter==0 %}
+            <input class="retour-2 margin" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
+            {% endif %}
         </div>
-    <table class="prospect">
-        <tr>
-            <th>NOM</th>
-            <th>PRÉNOM</th>
-            <th>EMAIL</th>
-            <th>POSTE</th>
-            <th>TÉLÉPHONE</th>
-            <th>COMMENTAIRES</th>
-            <th>ACTIF/INACTIF</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% for contact in contacts %}
-        <tr>
-            <td>{{contact.1}}</td>
-            <td>{{contact.2}}</td>
-            <td>{{contact.3}}</td>
-            <td>{{contact.4}}</td>
-            <td>{{contact.5}}</td>
-            <td>{{contact.8}}</td>
-            {% if contact.6 == 1 %}
-                <td class="actif">ACTIF</td>
-
-            {% else %}
-                <td class="inactif">INACTIF</td>
-            {% endif %}
-            <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
-            <td><a href="/ajouter-commentaire/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Ajouter un commentaire</button></a></td>
-            {% if contact.8 != 0 %}
-            <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
-            {% endif %}
-            <td><a href="/generer_facture/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Generer une facture</button></a></td>
-        </tr>
-        {% endfor %}
-    </table>
-        {% for information in info_prospect %}
-        <p class="retour">Adresse : {{information.1}} à {{information.3}} {{information.2}}
-            </br>Description : {{information.4}}
-            </br>Site : <a href="{{information.5}}" target="_blank">{{information.5}}</a>
-            </br>N° SIRET : {{information.0}}
-        </p>
-        {% endfor %}
-    <input  class="retour-3" type="button" value="Ajouter contact" onclick="window.location.href='/ajouter-contact/{{nom_prospect}}';">
-    {% if activiter == 1 %}
-    <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
-    {% elif activiter==0 %}
-    <input class="retour-2" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
-    {% endif %}
-</section>
+    </section>
+<div>
 {% endblock %}

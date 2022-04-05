@@ -233,7 +233,7 @@ body {
   display: flex;
   position: absolute;
   top: 11.25vh;
-  right: 50vh;
+  right: 44.5vh;
   cursor: pointer;
   border-radius: 5px;
   color: #FFFFFF;
@@ -250,7 +250,7 @@ body {
   display: flex;
   position: absolute;
   top: 12%;
-  right: 71vh;
+  right: 65vh;
 }
 
 .control-label {
@@ -283,16 +283,24 @@ tr{
 
 tr:nth-child(odd) {
 	background: #ffffff;
-    color: black;
+  color: black;
 }
 
 .retour{
-    position: fixed;
-    top: 20vh;
+  top: 30vh;
+  position: absolute;
+  font-family: 'Ubuntu', sans-serif;
+  transform: translate(-50%);
+  margin-left: 50%;
+  font-weight:bold;
+  color: white;
+  font-size: 25px;
+  line-height:30px;
+  text-align: center;
 }
-.retour-2{
-    position: fixed;
-    top: 30vh;
+
+a.url {
+  color: white;
 }
 
 .actif{
@@ -303,4 +311,21 @@ tr:nth-child(odd) {
 }
 #cacher{
     display: none;
+}
+
+.espace {
+  padding: 1vh;
+  padding-left: 2vh;
+  padding-right: 2vh;
+}
+
+.centrer-espacer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 35vh;
+}
+
+.margin {
+  margin: 10vh;
 }
