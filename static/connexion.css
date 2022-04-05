@@ -40,9 +40,19 @@ label {
     left: 50%;
     font-size: 25px;
 }
-
+.label{
+    transform: translate(0);
+    left: 39%;
+    font-size: initial;
+}
 .form{
     padding-top: 40px;
+}
+.form-2{
+    padding-top: 20px;
+}
+.div{
+    padding-left: 120px;
 }
 
 .mdp {
