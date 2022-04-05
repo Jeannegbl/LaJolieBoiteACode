@@ -17,27 +17,29 @@ Bootstrap(app)
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv('.env')
 
-
-# pythoncom.CoInitialize()
 class Utilisateur:
     def __init__(self, id, pseudo, mdp):
         self.id = id
         self.pseudo = pseudo
         self.mdp = mdp
 
+# tableau contenant la liste des utilisateurs avec le droit d'acceder au site
+db = DBSingleton.Instance()
+users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
+utilisateurs = []
+for i in users:
+    user = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
+    # globals()["Utilisateur%s" % str(i[0])] = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
+    utilisateurs.append(user) #eval("Utilisateur%s" % i[0]))
 
-
-def get_user_from_db(pseudo):
-    db = DBSingleton.Instance()
-    users = db.fetchall_simple("SELECT id,login,mot_de_passe as mdp FROM utilisateur WHERE login = '%s'" % pseudo)
-    return Utilisateur(*users[0]) if len(users) else None
 
 
 @app.before_request
 def before_request():
     g.utilisateur = False
     if 'utilisateur_id' in session:
-        g.utilisateur = get_user_from_db(session['pseudo'])
+        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
+        g.utilisateur = utilisateur[0] #get_user_from_db(session['pseudo'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -46,15 +48,15 @@ def connexion():
         session.pop('utilisateur_id', None)
         pseudo = request.form['pseudo']
         mdp = request.form['mdp']
+        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
 
-        utilisateur = get_user_from_db(pseudo)
+        # utilisateur = get_user_from_db(pseudo)
         session.permanent = False
         app.permanent_session_lifetime = timedelta(hours=1)
-        if utilisateur:
-            print(utilisateur)
-            if utilisateur.mdp == mdp:
-                session['utilisateur_id'] = utilisateur.id
-                session['pseudo'] = utilisateur.pseudo
+        if len(utilisateur):
+            if utilisateur[0].mdp == mdp:
+                session['utilisateur_id'] = utilisateur[0].id
+                session['pseudo'] = utilisateur[0].pseudo
                 instant = datetime.now()
                 session['heure_connexion'] = instant
                 return redirect('/accueil')
@@ -65,9 +67,8 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     del session['utilisateur_id']
-    if 'heure_expiration' in session :
-        del session['heure_expiration']
     return redirect('/')
+
 
 
 @app.route('/accueil')
@@ -75,7 +76,8 @@ def accueil():
     if not g.utilisateur:
         return redirect('/')
     connexion_unique = DBSingleton.Instance()
-    element = "SELECT prospect.nom, COUNT(facture.id) AS 'Nombre de facture' FROM `prospect` LEFT JOIN facture ON facture.prospect_id = prospect.id GROUP BY prospect.nom ORDER BY prospect.nom ASC"
+    element = "SELECT prospect.nom, COUNT(facture.id) AS 'Nombre de facture' FROM `prospect` LEFT JOIN facture ON " \
+              "facture.prospect_id = prospect.id GROUP BY prospect.nom ORDER BY prospect.nom ASC "
     prospects = connexion_unique.fetchall_simple(element)
     return render_template('accueil.html', prospects=prospects)
 
@@ -165,7 +167,7 @@ def genration_factures(prospect_nom, contact_id):
             if os.path.isfile(os.path.join(dir, path)):
                 nombre_factures += 1
         params: tuple = (
-        nombre_factures + 1, date, formFacture.montant_facture.data, contact_id, prospect_id, entreprise_id)
+            nombre_factures + 1, date, formFacture.montant_facture.data, contact_id, prospect_id, entreprise_id)
         insert("facture", "numero_facture,date_emission,montant,contact_id,prospect_id,entreprise_id", params)
         facture_id = select("facture", "id", "date_emission", date)[0][0]
 
@@ -182,16 +184,16 @@ def genration_factures(prospect_nom, contact_id):
 
 @app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
 def apercu_factures(nom_prospect, id_contact):
-    liste_url=[]
-    i=0
+    liste_url = []
+    i = 0
     for _ in select("facture", "id", "contact_id", id_contact):
         details_facture = Details_facture(select("facture", "id", "contact_id", id_contact)[i][0])
         entreprise = Entreprise(os.environ.get('entreprise_id'))
         prospect = Prospect(select("prospect", "id", "nom", nom_prospect)[0][0])
         contact = Contact(id_contact)
-        facture=Facture(entreprise,prospect,contact,details_facture)
-        liste_url.append(os.environ.get("url_dossier_factures")+facture.nomFacture+".pdf")
-        i+=1
+        facture = Facture(entreprise, prospect, contact, details_facture)
+        liste_url.append(os.environ.get("url_dossier_factures") + facture.nomFacture + ".pdf")
+        i += 1
     return render_template("apercufacture.html", liste_url=liste_url)
 
 
@@ -200,7 +202,7 @@ def apercu_facture(nom_facture):
     if not g.utilisateur:
         return redirect('/')
     url_pdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
-    liste_url=[url_pdf]
+    liste_url = [url_pdf]
     return render_template("apercufacture.html", liste_url=liste_url)
 
 
@@ -217,6 +219,7 @@ def effacer_prospect(prospect):
 def ajouter_prospect():
     if not g.utilisateur:
         return redirect('/')
+
     class Ajouterprospect(FlaskForm):
         nom = StringField('nom', validators=[DataRequired()])
         siret = DecimalField('siret', validators=[DataRequired()])
@@ -245,6 +248,7 @@ def ajouter_prospect():
 def ajouter_contact(prospect):
     if not g.utilisateur:
         return redirect('/')
+
     class Ajoutercontact(FlaskForm):
         nom = StringField('nom', validators=[DataRequired()])
         prenom = StringField('prenom', validators=[DataRequired()])
@@ -271,6 +275,7 @@ def ajouter_contact(prospect):
 def ajouter_commentaire(prospect, id_contact):
     if not g.utilisateur:
         return redirect('/')
+
     class Ajoutercommentaire(FlaskForm):
         commentaire = TextAreaField('commentaire', validators=[DataRequired()])
 
