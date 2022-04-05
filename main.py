@@ -7,11 +7,9 @@ from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
     DateField, EmailField, TelField, DecimalField, TextAreaField
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
-from datetime import datetime
+from datetime import datetime,timedelta
 from factures import *
 import os
-
-# import pythoncom
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -43,6 +41,11 @@ def before_request():
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
+        session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
+        session["instant"]=datetime.now()+timedelta(hours=0)
+        print(session["instant"],session['heure_expiration'])
+        if session["instant"]>session['heure_expiration'][:7]:
+            return redirect("/deconnexion")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -56,6 +59,9 @@ def connexion():
         if not utilisateur == []:
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
+                instant = datetime.now()
+                print(instant)
+                session['heure_heure_connexion']= instant
                 return redirect('/accueil')
             return redirect('/accueil')
     form = LoginForm()
@@ -65,6 +71,7 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     del session['utilisateur_id']
+    del session['heure_expiration']
     return redirect('/')
 
 
@@ -151,7 +158,7 @@ def genration_factures(prospect_nom, contact_id):
         date = str(datetime.now())[:-7]
 
         nombre_factures = 0
-        dir = "Factures"
+        dir = os.environ.get("chemin_complet_dossier_factures")
         for path in os.listdir(dir):
             if os.path.isfile(os.path.join(dir, path)):
                 nombre_factures += 1
