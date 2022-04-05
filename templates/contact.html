@@ -2,7 +2,7 @@
 
 {% block titre %}{% for prospect_contact in nom_prospect_contact %}<p class="titre">{{prospect_contact.0}} - {{prospect_contact.1}}</p>{% endfor %}{% endblock %}
 
-{% block section %}
+{% block content %}
 <section>
     {% for dernier_com in commentaire %}
     <p class="prospect">Le {{dernier_com.1}}</br>"{{dernier_com.0}}"</br>écrit par {{dernier_com.2}}</p>

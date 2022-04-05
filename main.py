@@ -4,13 +4,13 @@ from singleton import *
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
-    DateField
+    DateField, EmailField, TelField, DecimalField, TextAreaField
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime
 from factures import *
 import os
-import pythoncom
+#import pythoncom
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,7 +18,7 @@ Bootstrap(app)
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv('.env')
 
-pythoncom.CoInitialize()
+#pythoncom.CoInitialize()
 class Utilisateur:
     def __init__(self, id, pseudo, mdp):
         self.id = id
@@ -57,6 +57,11 @@ def connexion():
     form = LoginForm()
     return render_template('index.html', form=form, title='connexion')
 
+@app.route('/deconnexion')
+def deconnexion():
+    del session['utilisateur_id']
+    return redirect('/')
+
 
 @app.route('/accueil')
 def accueil():
@@ -77,7 +82,7 @@ class BarreDeRechercheFiltre(FlaskForm):
 def prospect(prospect, statut, recherche):
     filtre = BarreDeRechercheFiltre()
     if filtre.valider.data == True:
-        return redirect("/" + prospect + "/" + statut + "/" + filtre.filtreDefini.data)
+        return redirect("/menu-entreprises/" + prospect + "/" + statut + "/" + filtre.filtreDefini.data)
     # filtre en fonction du statut
     if statut == "inactif":
         bool_statut = 0
@@ -107,9 +112,9 @@ def contact(contact, prospect):
     connexion_unique = DBSingleton.Instance()
     element = "SELECT contact.*, COUNT(commentaire.contact_id) AS 'Nombre de commentaire' FROM `contact` LEFT JOIN commentaire ON commentaire.contact_id = contact.id JOIN prospect ON prospect.id = contact.prospect_id WHERE prospect.nom = '%s' AND statut = '0' GROUP BY contact.nom" % prospect
     contacts = connexion_unique.fetchall_simple(element)
-    element_2 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.nom = '%s' ORDER BY date_creation DESC LIMIT 1" % contact
+    element_2 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.id = '%s' ORDER BY date_creation DESC LIMIT 1" % contact
     commentaire = connexion_unique.fetchall_simple(element_2)
-    element_3 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.nom = '%s' ORDER BY date_creation DESC LIMIT 100 OFFSET 1 " % contact
+    element_3 = "SELECT commentaire.description, commentaire.date_creation, utilisateur.login FROM `contact`JOIN commentaire ON commentaire.contact_id = contact.id JOIN utilisateur ON utilisateur.id = commentaire.utilisateur_id WHERE contact.id = '%s' ORDER BY date_creation DESC LIMIT 100 OFFSET 1 " % contact
     liste_commentaires = connexion_unique.fetchall_simple(element_3)
     return render_template('contact.html', contacts=contacts, nom_prospect=prospect, contact=contact,
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
@@ -164,7 +169,58 @@ def apercu_facture(nom_facture):
     urlpdf=os.environ.get("url_dossier_factures")+nom_facture+".pdf"
     return render_template("apercufacture.html",urlpdf=urlpdf)
 
+@app.route('/effacer-prospect/<prospect>')
+def effacer_prospect(prospect):
+    id_prospect = Select("prospect", "id", "nom", prospect)[0]
+    Delete("prospect","id",id_prospect)
+    return redirect("/accueil")
 
+@app.route('/ajouter-prospect', methods=['GET', 'POST'])
+def ajouter_prospect():
+    class Ajouterprospect(FlaskForm):
+        nom = StringField('nom', validators=[DataRequired()])
+        siret = DecimalField('siret', validators=[DataRequired()])
+        adresse = StringField('adresse', validators=[DataRequired()])
+        codepostal = DecimalField('codepostal', validators=[DataRequired()])
+        ville = StringField('ville', validators=[DataRequired()])
+        description = TextAreaField('description')
+        url = TextAreaField('url')
+    form = Ajouterprospect()
+    if form.validate_on_submit():
+        nom = request.form['nom']
+        siret = request.form['siret']
+        adresse = request.form['adresse']
+        codepostal = request.form['codepostal']
+        ville = request.form['ville']
+        description = request.form['description']
+        url = request.form['url']
+        params:tuple=(nom,siret,adresse,codepostal,ville,description,url)
+        Insert("prospect", "nom, numero_siret, adresse_postale, code_postal, ville, description, url", params)
+        return redirect("/accueil")
+    return render_template('ajouter-prospect.html', form=form)
+
+
+@app.route('/ajouter-contact/<prospect>', methods=['GET', 'POST'])
+def ajouter_contact(prospect):
+    class Ajoutercontact(FlaskForm):
+        nom = StringField('nom', validators=[DataRequired()])
+        prenom = StringField('prenom', validators=[DataRequired()])
+        email = EmailField('email', validators=[DataRequired()])
+        poste = StringField('poste')
+        telephone = TelField('telephone')
+    form = Ajoutercontact()
+    if form.validate_on_submit():
+        nom = request.form['nom']
+        prenom = request.form['prenom']
+        email = request.form['email']
+        poste = request.form['poste']
+        telephone = request.form['telephone']
+        statut = '1'
+        id_prospect = Select("prospect", "id", "nom", prospect)[0]
+        params:tuple=(nom,prenom,email,poste,telephone,statut,id_prospect)
+        Insert("contact", "nom, prenom, email, poste, telephone, statut, prospect_id", params)
+        return redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
+    return render_template('ajouter-contact.html', form=form)
 
 
 if __name__ == "__main__":

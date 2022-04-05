@@ -1,7 +1,7 @@
 from docxtpl import DocxTemplate
 from models import *
 from docx2pdf import convert
-import pythoncom
+#import pythoncom
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -21,7 +21,7 @@ class Facture:
 
     def generate(self):
 
-        pythoncom.CoInitialize()
+        #pythoncom.CoInitialize()
         document = DocxTemplate("Factures/template/template.docx")
         template_values = {
             'nom_e': self.entreprise.nom_e,

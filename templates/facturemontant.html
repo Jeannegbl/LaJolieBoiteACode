@@ -1,7 +1,7 @@
 {% extends 'accueil.html' %}
 {% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block section %}
+{% block content %}
     	<div class="container-filtre">
             <form class="form form-horizontal" method="post" role="form">
                 {{wtf.form_field(formFacture.montant_facture,class="champs-montant")}}
