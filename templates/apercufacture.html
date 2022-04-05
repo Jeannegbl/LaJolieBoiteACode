@@ -2,9 +2,32 @@
 {% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
+    <style>
+      .wrap-element {
+        position: relative;
+        overflow: hidden;
+        padding-top: 56.25%;
+      }
+      .wrapped-iframe {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+    </style>
+<div class="container-filtre">
+            <form class="form form-horizontal" method="post" role="form">
+                {{wtf.form_field(formFacture.montant_facture,class="champs-montant",placeholder="Montant")}}
+                {{wtf.form_field(formFacture.valider, class="btnsub")}}
+            </form>
+        </div>
 
     {% for urlPDF in liste_url %}
-            <iframe src="{{urlPDF}}#toolbar=0" style="height:50vh; width:40vw;"></iframe>
+    <div class="wrap-element">
+            <iframe class="wrapped-iframe" src="{{urlPDF}}#toolbar=0" style="display:block;margin-left:30vw;height:60vh; width:40vw;" frameborder="0" allowfullscreen></iframe>
+    </div>
     {% endfor %}
 <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
 

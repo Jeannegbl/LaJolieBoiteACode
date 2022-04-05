@@ -147,11 +147,11 @@ def changement_statut(prospect, contact_id):
 
 
 class FormulaireFacturation(FlaskForm):
-    montant_facture = IntegerField("Montant de la facture", validators=[DataRequired()])
+    montant_facture = IntegerField("Envoyer une facture a ce contact", validators=[DataRequired()])
     valider = SubmitField('Valider')
 
 
-@app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
+#@app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
 def genration_factures(prospect_nom, contact_id):
     if not g.utilisateur:
         return redirect('/')
@@ -179,11 +179,13 @@ def genration_factures(prospect_nom, contact_id):
         facture.generate()
         nom_facture = facture.nomFacture
         return redirect("/apercu_facture/" + nom_facture)
-    return render_template("facturemontant.html", formFacture=formFacture)
+    return render_template("apercufacture.html", )
 
 
 @app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
 def apercu_factures(nom_prospect, id_contact):
+    if not g.utilisateur:
+        return redirect('/')
     liste_url = []
     i = 0
     for _ in select("facture", "id", "contact_id", id_contact):
@@ -194,7 +196,31 @@ def apercu_factures(nom_prospect, id_contact):
         facture = Facture(entreprise, prospect, contact, details_facture)
         liste_url.append(os.environ.get("url_dossier_factures") + facture.nomFacture + ".pdf")
         i += 1
-    return render_template("apercufacture.html", liste_url=liste_url)
+    formFacture = FormulaireFacturation()
+    if formFacture.valider.data == True:
+        prospect_id = select("prospect", "id", "nom", nom_prospect)[0][0]
+        entreprise_id = os.environ.get('entreprise_id')
+        date = str(datetime.now())[:-7]
+
+        nombre_factures = 0
+        dir = os.environ.get("chemin_complet_dossier_factures")
+        for path in os.listdir(dir):
+            if os.path.isfile(os.path.join(dir, path)):
+                nombre_factures += 1
+        params: tuple = (
+            nombre_factures + 1, date, formFacture.montant_facture.data, id_contact, prospect_id, entreprise_id)
+        insert("facture", "numero_facture,date_emission,montant,contact_id,prospect_id,entreprise_id", params)
+        facture_id = select("facture", "id", "date_emission", date)[0][0]
+
+        entreprise = Entreprise(os.environ.get('entreprise_id'))
+        prospect = Prospect(prospect_id)
+        contact = Contact(id_contact)
+        details_facture = Details_facture(facture_id)
+        facture = Facture(entreprise, prospect, contact, details_facture)
+        facture.generate()
+        nom_facture = facture.nomFacture
+        return redirect("/apercu_facture/" + nom_facture)
+    return render_template("apercufacture.html", formFacture=formFacture,liste_url=liste_url)
 
 
 @app.route('/apercu_facture/<nom_facture>', methods=['GET', 'POST'])
