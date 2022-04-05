@@ -10,7 +10,6 @@ from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime, timedelta
 from factures import *
 import os
-
 app = Flask(__name__)
 app.config.from_object(Config)
 Bootstrap(app)
@@ -25,19 +24,23 @@ class Utilisateur:
         self.pseudo = pseudo
         self.mdp = mdp
 
+# tableau contenant la liste des utilisateurs avec le droit d'acceder au site
+db = DBSingleton.Instance()
+users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
+utilisateurs = []
+for i in users:
+    user = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
+    # globals()["Utilisateur%s" % str(i[0])] = Utilisateur(id=i[0], pseudo=i[1], mdp=i[2])
+    utilisateurs.append(user) #eval("Utilisateur%s" % i[0]))
 
-
-def get_user_from_db(pseudo):
-    db = DBSingleton.Instance()
-    users = db.fetchall_simple("SELECT id,login,mot_de_passe as mdp FROM utilisateur WHERE login = '%s'" % pseudo)
-    return Utilisateur(*users[0]) if len(users) else None
 
 
 @app.before_request
 def before_request():
     g.utilisateur = False
     if 'utilisateur_id' in session:
-        g.utilisateur = get_user_from_db(session['pseudo'])
+        utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
+        g.utilisateur = utilisateur[0] #get_user_from_db(session['pseudo'])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -46,15 +49,15 @@ def connexion():
         session.pop('utilisateur_id', None)
         pseudo = request.form['pseudo']
         mdp = request.form['mdp']
+        utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
 
-        utilisateur = get_user_from_db(pseudo)
+        # utilisateur = get_user_from_db(pseudo)
         session.permanent = False
         app.permanent_session_lifetime = timedelta(hours=1)
-        if utilisateur:
-            print(utilisateur)
-            if utilisateur.mdp == mdp:
-                session['utilisateur_id'] = utilisateur.id
-                session['pseudo'] = utilisateur.pseudo
+        if len(utilisateur):
+            if utilisateur[0].mdp == mdp:
+                session['utilisateur_id'] = utilisateur[0].id
+                session['pseudo'] = utilisateur[0].pseudo
                 instant = datetime.now()
                 session['heure_connexion'] = instant
                 return redirect('/accueil')
@@ -65,8 +68,6 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     del session['utilisateur_id']
-    if 'heure_expiration' in session :
-        del session['heure_expiration']
     return redirect('/')
 
 
