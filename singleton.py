@@ -108,7 +108,7 @@ def insert(table, col, params: tuple):
     print(params)
     db.query(sql, params)
 
-def Delete(table, colonne_rech, id):
+def delete(table, colonne_rech, id):
     db = DBSingleton.Instance()
     sql = "DELETE FROM " + table + " WHERE " + colonne_rech + " = %s ;"
     params: tuple = (id,)
