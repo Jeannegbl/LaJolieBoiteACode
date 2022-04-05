@@ -11,7 +11,7 @@
     {% for comm in liste_commentaires %}
     <p class="prospect" id="cacher">Le {{comm.1}}</br>"{{comm.0}}"</br>écrit par {{comm.2}}</p>
     {% endfor %}
-    <input class="retour" type="button" value="Retour" onclick="javascript:history.back(-1);">
+    <input class="retour" type="button" value="Retour" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
 </section>
 <script>
 function myFunction() {

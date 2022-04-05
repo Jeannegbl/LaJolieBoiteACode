@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : sam. 02 avr. 2022 à 23:35
+-- Généré le : mar. 05 avr. 2022 à 14:08
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -32,7 +32,7 @@ CREATE TABLE `commentaire` (
   `utilisateur_id` int(11) NOT NULL,
   `contact_id` int(11) NOT NULL,
   `description` varchar(500) DEFAULT NULL,
-  `date_creation` datetime DEFAULT NULL
+  `date_creation` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -66,7 +66,8 @@ CREATE TABLE `contact` (
 
 INSERT INTO `contact` (`id`, `nom`, `prenom`, `email`, `poste`, `telephone`, `statut`, `prospect_id`) VALUES
 (1, 'DUCLOS', 'Erwann', 'erwann@duclos.fr', 'Professeur', 111111111, 1, 1),
-(2, 'PANNETIER', 'Magali', 'magali@pannetier.fr', 'Directrice', 111111110, 0, 1);
+(2, 'PANNETIER', 'Magali', 'magali@pannetier.fr', 'Directrice', 111111110, 0, 1),
+(11, 'test', 'test', 'test@test.com', 'test', 123456789, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -214,7 +215,7 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `entreprise`
@@ -226,13 +227,13 @@ ALTER TABLE `entreprise`
 -- AUTO_INCREMENT pour la table `facture`
 --
 ALTER TABLE `facture`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `prospect`
 --
 ALTER TABLE `prospect`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
@@ -248,7 +249,7 @@ ALTER TABLE `utilisateur`
 -- Contraintes pour la table `commentaire`
 --
 ALTER TABLE `commentaire`
-  ADD CONSTRAINT `fk_utilisateur_has_contact_contact1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_utilisateur_has_contact_contact1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_utilisateur_has_contact_utilisateur` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
@@ -261,9 +262,7 @@ ALTER TABLE `contact`
 -- Contraintes pour la table `facture`
 --
 ALTER TABLE `facture`
-  ADD CONSTRAINT `fk_facture_contact1` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_facture_entreprise1` FOREIGN KEY (`entreprise_id`) REFERENCES `entreprise` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_facture_prospect1` FOREIGN KEY (`prospect_id`) REFERENCES `prospect` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_facture_prospect1` FOREIGN KEY (`prospect_id`) REFERENCES `prospect` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

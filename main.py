@@ -235,5 +235,19 @@ def ajouter_contact(prospect):
     return render_template('ajouter-contact.html', form=form)
 
 
+@app.route('/ajouter-commentaire/<prospect>/<id_contact>', methods=['GET', 'POST'])
+def ajouter_commentaire(prospect,id_contact):
+    class Ajoutercommentaire(FlaskForm):
+        commentaire = TextAreaField('commentaire', validators=[DataRequired()])
+    form = Ajoutercommentaire()
+    if form.validate_on_submit():
+        commentaire = request.form['commentaire']
+        contact = id_contact
+        utilisateur = session['utilisateur_id']
+        params: tuple = (utilisateur, contact, commentaire)
+        Insert("commentaire", "utilisateur_id, contact_id, description", params)
+        return redirect("/contact/" + prospect + "/" + id_contact)
+    return render_template('ajouter-commentaire.html', form=form)
+
 if __name__ == "__main__":
     app.run(debug=True)

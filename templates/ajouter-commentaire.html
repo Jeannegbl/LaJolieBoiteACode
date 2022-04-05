@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <form method="POST">
+            <fieldset>
+                {{ form.csrf_token }}
+                <div><label>Commentaire</label>{{ form.commentaire(size=20) }}</div>
+                <input type="submit" value="Créer">
+            </fieldset>
+        </form>
+    </body>
+</html>

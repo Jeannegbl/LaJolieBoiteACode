@@ -21,6 +21,7 @@
             <th>ACTIF/INACTIF</th>
             <th></th>
             <th></th>
+            <th></th>
         </tr>
         {% for contact in contacts %}
         <tr>
@@ -37,6 +38,7 @@
                 <td class="inactif">INACTIF</td>
             {% endif %}
             <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
+            <td><a href="/ajouter-commentaire/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Ajouter un commentaire</button></a></td>
             {% if contact.8 != 0 %}
             <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
             {% endif %}
