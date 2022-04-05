@@ -34,20 +34,20 @@ class DBSingleton:
         pass
 
     def query(self, sql, params=()):
-        cursor = self.conn.cursor()
+        print(sql)
+        cursor = self.conn.cursor(buffered=True)
+
         # This attaches the tracer but ca marche pas on mysql
         # self.conn.set_trace_callback(print)
         cursor.execute(sql, params)
         try:
             self.result = cursor.fetchall()
-        except mysql.connector.errors.InterfaceError:
+        except mysql.connector.errors.InterfaceError as e:
             self.conn.commit()
-            cursor.close()
             self.result = False
-            return self.result
         else:
             self.conn.commit()
-
+        finally:
             cursor.close()
             return self.result
 
@@ -68,6 +68,7 @@ class DBSingleton:
     def query_arguments(self, sql, args: tuple = ()):
         mycursor = self.conn.cursor(buffered=True)
         mycursor.execute(sql, args)
+        mycursor.close()
         return mycursor
 
     def commit(self, sql, args):
@@ -77,7 +78,7 @@ class DBSingleton:
 
 def select(table, col, colonne_rech, id):
     db = DBSingleton.Instance()
-    sql = "SELECT " + col + " from " + table + " WHERE " + colonne_rech + "=%s;"
+    sql = f"SELECT {col}  from " + table + " WHERE " + colonne_rech + "=%s;"
     params: tuple = (id,)
     db.query(sql, params)
     return db.result

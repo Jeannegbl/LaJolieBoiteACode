@@ -1,20 +1,35 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
     <head>
         <meta charset="UTF-8">
-        <title>Title</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi">
+        <meta property="og:image" content="{{ url_for('static', filename='logo.png') }}">
+        <meta property="og:description" content="Venez profiter de nos services dans l'informatique !">
+        <meta property="og:title" content="La Jolie Boîte à Code">
+        <link rel="stylesheet" href="{{ url_for('static', filename='normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='connexion.css') }}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap">
+        <link rel="icon" type="png" href="{{ url_for('static', filename='logo.png') }}">
+        <title>Ajouter contact</title>
     </head>
     <body>
-        <form method="POST">
-            <fieldset>
+        <div class="conteneur">
+            <p class="titre" align="center">Ajouter contact :</p>
+            <form class="form" method="post">
                 {{ form.csrf_token }}
-                <div><label>Nom</label>{{ form.nom(size=20) }}</div>
-                <div><label>Prénom</label>{{ form.prenom(size=20) }}</div>
-                <div><label>Email</label>{{ form.email(size=20) }}</div>
-                <div><label>Poste</label>{{ form.poste(size=20) }}</div>
-                <div><label>Téléphone</label>{{ form.telephone(size=20) }}</div>
-                <input type="submit" value="Créer">
-            </fieldset>
-        </form>
+                <div class="div"><label class="label">Nom</label>{{ form.nom(size=20) }}</div>
+                <div class="div"><label class="label">Prénom</label>{{ form.prenom(size=20) }}</div>
+                <div class="div"><label class="label">Email</label>{{ form.email(size=20) }}</div>
+                <div class="div"><label class="label">Poste</label>{{ form.poste(size=20) }}</div>
+                <div class="div"><label class="label">Téléphone</label>{{ form.telephone(size=20) }}</div>
+                <input class="submit" type="submit" value="Créer">
+           </form>
+            <input class="submit" type="button" value="Retour" onclick="javascript:history.back(-1);">
+        </div>
     </body>
 </html>
