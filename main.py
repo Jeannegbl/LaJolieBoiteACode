@@ -10,7 +10,8 @@ from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime
 from factures import *
 import os
-#import pythoncom
+
+# import pythoncom
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -18,14 +19,16 @@ Bootstrap(app)
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv('.env')
 
-#pythoncom.CoInitialize()
+
+# pythoncom.CoInitialize()
 class Utilisateur:
     def __init__(self, id, pseudo, mdp):
         self.id = id
         self.pseudo = pseudo
         self.mdp = mdp
 
-#tableau contenant la liste des utilisateurs avec le droit d'acceder au site
+
+# tableau contenant la liste des utilisateurs avec le droit d'acceder au site
 db = DBSingleton.Instance()
 users = db.fetchall_simple("SELECT id,login,mot_de_passe FROM utilisateur")
 utilisateurs = []
@@ -36,10 +39,10 @@ for i in users:
 
 @app.before_request
 def before_request():
-    g.utilisateur = False
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
+
 
 @app.route('/', methods=['GET', 'POST'])
 def connexion():
@@ -49,13 +52,14 @@ def connexion():
         mdp = request.form['mdp']
 
         utilisateur = [x for x in utilisateurs if x.pseudo == pseudo]
-        if not utilisateur==[]:
+        if not utilisateur == []:
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
                 return redirect('/accueil')
             return redirect('/accueil')
     form = LoginForm()
     return render_template('index.html', form=form, title='connexion')
+
 
 @app.route('/deconnexion')
 def deconnexion():
@@ -118,29 +122,32 @@ def contact(contact, prospect):
     liste_commentaires = connexion_unique.fetchall_simple(element_3)
     return render_template('contact.html', contacts=contacts, nom_prospect=prospect, contact=contact,
                            commentaire=commentaire, liste_commentaires=liste_commentaires)
+
+
 @app.route('/changer-statut/<prospect>/<contact_id>')
-def  changement_statut(prospect,contact_id):
-    statut_actuel=Select("contact","statut","id",contact_id)[0]
+def changement_statut(prospect, contact_id):
+    statut_actuel = Select("contact", "statut", "id", contact_id)[0]
     print(statut_actuel)
-    if statut_actuel==0:
-        update("contact","statut",(1,),"id",contact_id)
-        return redirect("/menu-entreprises/"+prospect+"/actif/filtre-off")
-    if  statut_actuel==1:
-        update("contact","statut",(0,),"id",contact_id)
-        return redirect("/menu-entreprises/"+prospect+"/inactif/filtre-off")
+    if statut_actuel == 0:
+        update("contact", "statut", (1,), "id", contact_id)
+        return redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
+    if statut_actuel == 1:
+        update("contact", "statut", (0,), "id", contact_id)
+        return redirect("/menu-entreprises/" + prospect + "/inactif/filtre-off")
 
 
 class FormulaireFacturation(FlaskForm):
     montant_facture = IntegerField("Montant de la facture", validators=[DataRequired()])
     valider = SubmitField('Valider')
-@app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
-def genration_factures(prospect_nom,contact_id):
-    formFacture=FormulaireFacturation()
-    if formFacture.valider.data==True:
-        prospect_id=Select("prospect","id","nom",prospect_nom)[0]
-        entreprise_id=os.environ.get('entreprise_id')
-        date=str(datetime.now())[:-7]
 
+
+@app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
+def genration_factures(prospect_nom, contact_id):
+    formFacture = FormulaireFacturation()
+    if formFacture.valider.data == True:
+        prospect_id = Select("prospect", "id", "nom", prospect_nom)[0]
+        entreprise_id = os.environ.get('entreprise_id')
+        date = str(datetime.now())[:-7]
 
         nombre_factures = 0
         dir = "Factures"
@@ -148,32 +155,34 @@ def genration_factures(prospect_nom,contact_id):
             if os.path.isfile(os.path.join(dir, path)):
                 nombre_factures += 1
         print(nombre_factures)
-        params:tuple=(nombre_factures+1,date,formFacture.montant_facture.data,contact_id,prospect_id,entreprise_id)
-        insert("facture","numero_facture,date_emission,montant,contact_id,prospect_id,entreprise_id",params)
-        facture_id=Select("facture", "id", "date_emission", date)[0]
+        params: tuple = (
+        nombre_factures + 1, date, formFacture.montant_facture.data, contact_id, prospect_id, entreprise_id)
+        insert("facture", "numero_facture,date_emission,montant,contact_id,prospect_id,entreprise_id", params)
+        facture_id = Select("facture", "id", "date_emission", date)[0]
 
-
-        entreprise=Entreprise(os.environ.get('entreprise_id'))
-        prospect=Prospect(prospect_id)
-        contact=Contact(contact_id)
-        details_facture=Details_facture(facture_id)
-        facture=Facture(entreprise,prospect,contact,details_facture)
+        entreprise = Entreprise(os.environ.get('entreprise_id'))
+        prospect = Prospect(prospect_id)
+        contact = Contact(contact_id)
+        details_facture = Details_facture(facture_id)
+        facture = Facture(entreprise, prospect, contact, details_facture)
         facture.generate()
-        nom_facture=facture.nomFacture
-        return redirect("/apercu_facture/"+nom_facture)
+        nom_facture = facture.nomFacture
+        return redirect("/apercu_facture/" + nom_facture)
     return render_template("facturemontant.html", formFacture=formFacture)
+
 
 @app.route('/apercu_facture/<nom_facture>', methods=['GET', 'POST'])
 def apercu_facture(nom_facture):
+    urlpdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
+    return render_template("apercufacture.html", urlpdf=urlpdf)
 
-    urlpdf=os.environ.get("url_dossier_factures")+nom_facture+".pdf"
-    return render_template("apercufacture.html",urlpdf=urlpdf)
 
 @app.route('/effacer-prospect/<prospect>')
 def effacer_prospect(prospect):
     id_prospect = Select("prospect", "id", "nom", prospect)[0]
-    Delete("prospect","id",id_prospect)
+    Delete("prospect", "id", id_prospect)
     return redirect("/accueil")
+
 
 @app.route('/ajouter-prospect', methods=['GET', 'POST'])
 def ajouter_prospect():
@@ -185,6 +194,7 @@ def ajouter_prospect():
         ville = StringField('ville', validators=[DataRequired()])
         description = TextAreaField('description')
         url = TextAreaField('url')
+
     form = Ajouterprospect()
     if form.validate_on_submit():
         nom = request.form['nom']
@@ -194,7 +204,7 @@ def ajouter_prospect():
         ville = request.form['ville']
         description = request.form['description']
         url = request.form['url']
-        params:tuple=(nom,siret,adresse,codepostal,ville,description,url)
+        params: tuple = (nom, siret, adresse, codepostal, ville, description, url)
         Insert("prospect", "nom, numero_siret, adresse_postale, code_postal, ville, description, url", params)
         return redirect("/accueil")
     return render_template('ajouter-prospect.html', form=form)
@@ -208,6 +218,7 @@ def ajouter_contact(prospect):
         email = EmailField('email', validators=[DataRequired()])
         poste = StringField('poste')
         telephone = TelField('telephone')
+
     form = Ajoutercontact()
     if form.validate_on_submit():
         nom = request.form['nom']
@@ -217,7 +228,7 @@ def ajouter_contact(prospect):
         telephone = request.form['telephone']
         statut = '1'
         id_prospect = Select("prospect", "id", "nom", prospect)[0]
-        params:tuple=(nom,prenom,email,poste,telephone,statut,id_prospect)
+        params: tuple = (nom, prenom, email, poste, telephone, statut, id_prospect)
         Insert("contact", "nom, prenom, email, poste, telephone, statut, prospect_id", params)
         return redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
     return render_template('ajouter-contact.html', form=form)
