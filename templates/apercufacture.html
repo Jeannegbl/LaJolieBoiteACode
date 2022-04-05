@@ -2,7 +2,10 @@
 {% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-<iframe src="{{urlpdf}}#toolbar=0" style="height:78vh; width:100vw;"></iframe>
+
+    {% for urlPDF in liste_url %}
+            <iframe src="{{urlPDF}}#toolbar=0" style="height:50vh; width:40vw;"></iframe>
+    {% endfor %}
 <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
 
 {% endblock %}

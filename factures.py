@@ -1,7 +1,7 @@
 from docxtpl import DocxTemplate
 from models import *
 from docx2pdf import convert
-#import pythoncom
+import pythoncom
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
@@ -12,7 +12,6 @@ load_dotenv('.env')
 
 
 class Facture:
-
     def __init__(self, entreprise: Entreprise, prospect: Prospect, contact: Contact, details_facture: Details_facture):
         self.entreprise = entreprise
         self.prospect = prospect

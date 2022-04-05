@@ -178,7 +178,7 @@ def genration_factures(prospect_nom, contact_id):
 
 @app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
 def apercu_factures(nom_prospect, id_contact):
-    listeFactures=[]
+    liste_url=[]
     i=0
     for _ in select("facture", "id", "contact_id", id_contact):
         details_facture = Details_facture(select("facture", "id", "contact_id", id_contact)[i][0])
@@ -186,17 +186,16 @@ def apercu_factures(nom_prospect, id_contact):
         prospect = Prospect(select("prospect", "id", "nom", nom_prospect)[0][0])
         contact = Contact(id_contact)
         facture=Facture(entreprise,prospect,contact,details_facture)
-        listeFactures.append(facture.nomFacture)
-        print(listeFactures, i)
-        print(select("facture", "id", "contact_id", id_contact)[0])
+        liste_url.append(os.environ.get("url_dossier_factures")+facture.nomFacture+".pdf")
         i+=1
-
+    return render_template("apercufacture.html", liste_url=liste_url)
 
 
 @app.route('/apercu_facture/<nom_facture>', methods=['GET', 'POST'])
 def apercu_facture(nom_facture):
-    urlpdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
-    return render_template("apercufacture.html", urlpdf=urlpdf)
+    url_pdf = os.environ.get("url_dossier_factures") + nom_facture + ".pdf"
+    liste_url=[url_pdf]
+    return render_template("apercufacture.html", liste_url=liste_url)
 
 
 @app.route('/effacer-prospect/<prospect>')
