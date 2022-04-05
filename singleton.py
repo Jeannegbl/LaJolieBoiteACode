@@ -75,12 +75,12 @@ class DBSingleton:
         self.conn.commit()
 
 
-def Select(table, col, colonne_rech, id):
+def select(table, col, colonne_rech, id):
     db = DBSingleton.Instance()
     sql = "SELECT " + col + " from " + table + " WHERE " + colonne_rech + "=%s;"
     params: tuple = (id,)
     db.query(sql, params)
-    return db.result[0]
+    return db.result
 
 
 def update(table, col, params: tuple, colonne_rech, id):
@@ -108,7 +108,7 @@ def insert(table, col, params: tuple):
     print(params)
     db.query(sql, params)
 
-def Delete(table, colonne_rech, id):
+def delete(table, colonne_rech, id):
     db = DBSingleton.Instance()
     sql = "DELETE FROM " + table + " WHERE " + colonne_rech + " = %s ;"
     params: tuple = (id,)

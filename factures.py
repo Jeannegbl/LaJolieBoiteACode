@@ -18,6 +18,7 @@ class Facture:
         self.prospect = prospect
         self.contact = contact
         self.details_facture = details_facture
+        self.nomFacture="facture_" + self.details_facture.numero_f +"_"+ self.details_facture.date_emission_f
 
     def generate(self):
 
