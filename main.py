@@ -41,11 +41,6 @@ def before_request():
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
-        # session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
-        # session["instant"]=datetime.now()+timedelta(hours=0)
-        # print(session["instant"],session['heure_expiration'])
-        # if session["instant"]>session['heure_expiration'][:7]:
-        # return redirect("/deconnexion")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -59,8 +54,6 @@ def connexion():
         if not utilisateur == []:
             if utilisateur[0].mdp == mdp:
                 session['utilisateur_id'] = utilisateur[0].id
-                instant = datetime.now()
-                session['heure_connexion'] = instant
                 return redirect('/accueil')
             return redirect('/accueil')
     form = LoginForm()
@@ -70,7 +63,6 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     del session['utilisateur_id']
-    del session['heure_expiration']
     return redirect('/')
 
 
