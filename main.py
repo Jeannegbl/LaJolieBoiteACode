@@ -8,7 +8,7 @@ from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime,timedelta
-from factures import *
+#from factures import *
 import os
 
 app = Flask(__name__)
@@ -41,11 +41,11 @@ def before_request():
     if 'utilisateur_id' in session:
         utilisateur = [x for x in utilisateurs if x.id == session['utilisateur_id']]
         g.utilisateur = utilisateur[0]
-        session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
-        session["instant"]=datetime.now()+timedelta(hours=0)
-        print(session["instant"],session['heure_expiration'])
-        if session["instant"]>session['heure_expiration'][:7]:
-            return redirect("/deconnexion")
+        #session["heure_expiration"]=session['heure_connexion']+timedelta(hours=1)
+        #session["instant"]=datetime.now()+timedelta(hours=0)
+        #print(session["instant"],session['heure_expiration'])
+        #if session["instant"]>session['heure_expiration'][:7]:
+        #    return redirect("/deconnexion")
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -86,8 +86,8 @@ def accueil():
 
 
 class BarreDeRechercheFiltre(FlaskForm):
-    filtreDefini = StringField("Filtrer les contacts", validators=[DataRequired()])
-    valider = SubmitField('Valider')
+    filtreDefini = StringField("Filtrer les contacts :", validators=[DataRequired()])
+    valider = SubmitField('Rechercher')
 
 
 @app.route('/menu-entreprises/<prospect>/<statut>/<recherche>', methods=['GET', 'POST'])

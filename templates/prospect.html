@@ -1,5 +1,4 @@
 {% extends 'accueil.html' %}
-{% block titre %}<p class="titre">{{nom_prospect}}</p>{% endblock %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
 
@@ -53,7 +52,6 @@
             </br>N° SIRET : {{information.0}}
         </p>
         {% endfor %}
-    <input class="retour" type="button" value="Retour" onclick="window.location.href='/{{('accueil')}}';">
     <input  class="retour-3" type="button" value="Ajouter contact" onclick="window.location.href='/ajouter-contact/{{nom_prospect}}';">
     {% if activiter == 1 %}
     <input class="retour-2" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
