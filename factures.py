@@ -1,7 +1,7 @@
 from docxtpl import DocxTemplate
 from models import *
 from docx2pdf import convert
-#import pythoncom
+import pythoncom
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv

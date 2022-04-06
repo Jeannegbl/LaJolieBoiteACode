@@ -8,7 +8,7 @@
     }
 </style>
 <div class="container-filtre">
-            <form class="form form-horizontal" method="post" role="form">
+            <form {{effaceur}} class="form form-horizontal" method="post" role="form">
                 {{wtf.form_field(formFacture.montant_facture,class="champs-montant",placeholder="Montant")}}
                 {{wtf.form_field(formFacture.valider, class="btnsub")}}
             </form>

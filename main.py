@@ -114,7 +114,7 @@ def prospect(prospect, statut, recherche):
     activiter = bool_statut
     filtre = BarreDeRechercheFiltre()
     result = render_template('prospect.html', contacts=contacts, nom_prospect=prospect, info_prospect=info_prospect,
-                             activiter=activiter, barrederecherche=filtre)
+                             activiter=activiter, barrederecherche=filtre,style_additionnel="style=display:block;")
     if not g.utilisateur:
         result = redirect('/')
     if filtre.valider.data == True:
@@ -192,6 +192,27 @@ def genration_factures(prospect_nom, contact_id):
         facture.generate()
         nom_facture = facture.nomFacture
         result = redirect("/apercu_facture/" + nom_facture)
+    return result
+@app.route('/factures/<nom_prospect>', methods=['GET', 'POST'])
+def factures_prospect(nom_prospect):
+    if not g.utilisateur:
+        result= redirect('/')
+    else:
+        liste_url = []
+        formFacture = FormulaireFacturation()
+        prospect_id=select("prospect","id","nom",nom_prospect)[0][0]
+        contacts_ids=select("contact", "id", "prospect_id", prospect_id)
+        for contact_id in contacts_ids:
+            i = 0
+            for _ in select("facture", "id", "contact_id", contact_id[0]):
+                details_facture = Details_facture(select("facture", "id", "contact_id", contact_id[0])[i][0])
+                entreprise = Entreprise(os.environ.get('entreprise_id'))
+                prospect = Prospect(select("prospect", "id", "nom", nom_prospect)[0][0])
+                contact = Contact(contact_id[0])
+                facture = Facture(entreprise, prospect, contact, details_facture)
+                liste_url.append(os.environ.get("url_dossier_factures") + facture.nomFacture + ".pdf")
+                i += 1
+        result = render_template("apercufacture.html", effaceur="style=display:none;",formFacture=formFacture, liste_url=liste_url,nom_prospect=nom_prospect,)
     return result
 class FormulaireFacturation(FlaskForm):
     montant_facture = IntegerField("Envoyer une facture a ce contact", validators=[DataRequired()])
@@ -281,7 +302,7 @@ def ajouter_prospect():
         description = request.form['description']
         url = request.form['url']
         params: tuple = (nom, siret, adresse, codepostal, ville, description, url)
-        Insert("prospect", "nom, numero_siret, adresse_postale, code_postal, ville, description, url", params)
+        insert("prospect", "nom, numero_siret, adresse_postale, code_postal, ville, description, url", params)
         result = redirect("/accueil")
     return result
 
@@ -309,7 +330,7 @@ def ajouter_contact(prospect):
         statut = '1'
         id_prospect = select("prospect", "id", "nom", prospect)[0][0]
         params: tuple = (nom, prenom, email, poste, telephone, statut, id_prospect)
-        Insert("contact", "nom, prenom, email, poste, telephone, statut, prospect_id", params)
+        insert("contact", "nom, prenom, email, poste, telephone, statut, prospect_id", params)
         result = redirect("/menu-entreprises/" + prospect + "/actif/filtre-off")
     return result
 
@@ -327,7 +348,7 @@ def ajouter_commentaire(prospect, id_contact):
         contact = id_contact
         utilisateur = session['utilisateur_id']
         params: tuple = (utilisateur, contact, commentaire)
-        Insert("commentaire", "utilisateur_id, contact_id, description", params)
+        insert("commentaire", "utilisateur_id, contact_id, description", params)
         result = redirect("/contact/" + prospect + "/" + id_contact)
     return result
 

@@ -34,7 +34,6 @@ class DBSingleton:
         pass
 
     def query(self, sql, params=()):
-        print(sql)
         cursor = self.conn.cursor(buffered=True)
 
         # This attaches the tracer but ca marche pas on mysql
@@ -106,7 +105,6 @@ def insert(table, col, params: tuple):
         insertion_pourcent_s = insertion_pourcent_s + "%s,"
     insertion_pourcent_s = insertion_pourcent_s[:-1]
     sql = "INSERT INTO " + table + "(" + col + ")VALUES (" + insertion_pourcent_s + ")"
-    print(params)
     db.query(sql, params)
 
 def delete(table, colonne_rech, id):
@@ -115,12 +113,3 @@ def delete(table, colonne_rech, id):
     params: tuple = (id,)
     db.query(sql, params)
 
-def Insert(table, col, params: tuple):
-    db = DBSingleton.Instance()
-    insertion_pourcent_s = ""
-    col_list = col.split(',')
-    for _ in col_list:
-        insertion_pourcent_s = insertion_pourcent_s + "%s,"
-    insertion_pourcent_s = insertion_pourcent_s[:-1]
-    sql = "INSERT INTO " + table + "(" + col + ")VALUES (" + insertion_pourcent_s + ")"
-    db.query(sql, params)
