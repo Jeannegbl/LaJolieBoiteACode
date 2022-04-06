@@ -294,7 +294,7 @@ def ajouter_contact(prospect):
         prenom = StringField('prenom', validators=[DataRequired()])
         email = EmailField('email', validators=[DataRequired()])
         poste = StringField('poste')
-        telephone = TelField('telephone')
+        telephone = DecimalField('telephone')
 
     form = Ajoutercontact()
     result = render_template('ajouter-contact.html', form=form)
