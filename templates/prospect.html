@@ -1,7 +1,7 @@
 {% extends 'accueil.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% block content %}
-<div class="conteneur">
+<div>
     <section>
             <div class="container-filtre">
                 <form class="form form-horizontal" method="post" role="form">
@@ -37,11 +37,11 @@
                 {% else %}
                     <td class="inactif">INACTIF</td>
                 {% endif %}
-                <td><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Changer statut contact</button></a></td>
-                <td><a href="/ajouter-commentaire/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Ajouter un commentaire</button></a></td>
-                <td><a href="/apercu_factures/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Factures</button></a></td>
+                <td class="padding"><a href="/changer-statut/{{nom_prospect}}/{{contact.0}}"><button  class="bouton">Changer statut contact</button></a></td>
+                <td class="padding"><a href="/ajouter-commentaire/{{nom_prospect}}/{{contact.0}}"><button  class="bouton">Ajouter un commentaire</button></a></td>
+                <td class="padding"><a href="/apercu_factures/{{nom_prospect}}/{{contact.0}}"><button  class="bouton">Factures</button></a></td>
                 {% if contact.8 != 0 %}
-                <td><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="boutton">Voir le dernier commentaire</button></a></td>
+                <td class="padding"><a href="/contact/{{nom_prospect}}/{{contact.0}}"><button  class="bouton">Voir le dernier commentaire</button></a></td>
                 {% else %}
                 <td></td>
                 {% endif %}
@@ -55,12 +55,12 @@
                 </br>N° SIRET : {{information.0}}
             </p>
             {% endfor %}
-        <div class="centrer-espacer">
-            <input  class="margin" type="button" value="Ajouter contact" onclick="window.location.href='/ajouter-contact/{{nom_prospect}}';">
+        <div class="centrer-espacer padding">
+            <input  class="margin bouton" type="button" value="Ajouter contact" onclick="window.location.href='/ajouter-contact/{{nom_prospect}}';">
             {% if activiter == 1 %}
-            <input class="margin" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
+            <input class="margin bouton" type="button" value="Voir les comptes inactifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/inactif/filtre-off';">
             {% elif activiter==0 %}
-            <input class="margin" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
+            <input class="margin bouton" type="button" value="Voir les comptes actifs" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
             {% endif %}
         </div>
     </section>

@@ -337,3 +337,29 @@ a.url {
 .margin {
   margin: 10vh;
 }
+
+.bouton {
+  cursor: pointer;
+  border-radius: 5px;
+  color: #FFFFFF;
+  background-color: black;
+  border: 0;
+  padding-left: 32.5px;
+  padding-right: 32.5px;
+  padding-bottom: 7px;
+  padding-top: 7px;
+  font-size: 15px;
+}
+
+.padding {
+    padding: 1.5vh
+}
+
+.conteneur {
+  background-color: #FFFFFF;
+  width: 48.5vh;
+  height: 52.5vh;
+  margin: 7em auto;
+  border-radius: 1.5em;
+  box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+}

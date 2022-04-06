@@ -8,7 +8,7 @@ from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime, timedelta
-from factures import *
+#from factures import *
 import os
 
 app = Flask(__name__)

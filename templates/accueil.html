@@ -4,17 +4,17 @@
         <section>
             <table class="table">
                 <tr>
-                    <th>NOM</th>
-                    <th>NOMBRE FACTURE</th>
+                    <th class="espace">NOM</th>
+                    <th class="espace">NOMBRE FACTURE</th>
                     <th></th>
                 </tr>
                 {% for prospect in prospects %}
                 <tr>
                     <td>{{prospect.0}}</td>
                     <td>{{prospect.1}}</td>
-                    <td><input type="button" value="Voir les contacts" onclick="window.location.href='/menu-entreprises/{{prospect.0}}/actif/filtre-off';"></td>
+                    <td class="padding"><input class="bouton" type="button" value="Voir les contacts" onclick="window.location.href='/menu-entreprises/{{prospect.0}}/actif/filtre-off';"></td>
                     {% if prospect.1 == 0 %}
-                    <td><input type="button" value="Effacer" onclick="window.location.href='/effacer-prospect/{{prospect.0}}';"></td>
+                    <td class="padding"><input class="bouton" type="button" value="Effacer" onclick="window.location.href='/effacer-prospect/{{prospect.0}}';"></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
