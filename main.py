@@ -8,7 +8,7 @@ from wtforms import StringField, SubmitField, BooleanField, IntegerField, \
 from wtforms.validators import DataRequired
 from flask import Flask, render_template, redirect, request, session, g
 from datetime import datetime, timedelta
-# from factures import *
+from factures import *
 import os
 
 app = Flask(__name__)
@@ -160,9 +160,7 @@ def changement_statut(prospect, contact_id):
     return result
 
 
-class FormulaireFacturation(FlaskForm):
-    montant_facture = IntegerField("Envoyer une facture a ce contact", validators=[DataRequired()])
-    valider = SubmitField('Valider')
+
 
 
 # @app.route('/generer_facture/<prospect_nom>/<contact_id>', methods=['GET', 'POST'])
@@ -195,11 +193,12 @@ def genration_factures(prospect_nom, contact_id):
         nom_facture = facture.nomFacture
         result = redirect("/apercu_facture/" + nom_facture)
     return result
-
+class FormulaireFacturation(FlaskForm):
+    montant_facture = IntegerField("Envoyer une facture a ce contact", validators=[DataRequired()])
+    valider = SubmitField('Valider')
 
 @app.route('/apercu_factures/<nom_prospect>/<id_contact>', methods=['GET', 'POST'])
 def apercu_factures(nom_prospect, id_contact):
-    result = render_template("apercufacture.html", formFacture=formFacture, liste_url=liste_url)
     if not g.utilisateur:
         result = redirect('/')
     liste_url = []
@@ -213,6 +212,7 @@ def apercu_factures(nom_prospect, id_contact):
         liste_url.append(os.environ.get("url_dossier_factures") + facture.nomFacture + ".pdf")
         i += 1
     formFacture = FormulaireFacturation()
+    result = render_template("apercufacture.html", formFacture=formFacture, liste_url=liste_url)
     if formFacture.valider.data == True:
         prospect_id = select("prospect", "id", "nom", nom_prospect)[0][0]
         entreprise_id = os.environ.get('entreprise_id')
@@ -236,6 +236,7 @@ def apercu_factures(nom_prospect, id_contact):
         facture.generate()
         nom_facture = facture.nomFacture
         result = redirect("/apercu_facture/" + nom_facture)
+
     return result
 
 
