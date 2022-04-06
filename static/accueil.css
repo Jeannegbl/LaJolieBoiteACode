@@ -270,6 +270,7 @@ th{
 
 tr{
 	background: #f0f0f0;
+
     color: black;
 }
 
@@ -284,6 +285,7 @@ tr:nth-child(odd) {
     margin-right: auto;
     text-align: center;
     border-collapse: collapse;
+      font-family: 'Ubuntu', sans-serif;
 }
 
 .desc{
