@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 05 avr. 2022 à 14:08
+-- Généré le : mer. 06 avr. 2022 à 11:57
 -- Version du serveur :  10.3.34-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 7.4.3
 
@@ -41,7 +41,9 @@ CREATE TABLE `commentaire` (
 
 INSERT INTO `commentaire` (`utilisateur_id`, `contact_id`, `description`, `date_creation`) VALUES
 (1, 1, 'Contrat en cours pour faire notre projet Python', '2022-03-31 12:28:35'),
-(1, 1, 'Je suis un test', '2022-04-02 22:40:10');
+(1, 1, 'Présentation le 7 Avril 2022', '2022-04-02 22:40:10'),
+(1, 11, 'Prendre contact pour les entreprises', '2022-04-05 14:15:49'),
+(1, 11, 'A changer d\'entreprise : Capgemini', '2022-04-05 18:05:25');
 
 -- --------------------------------------------------------
 
@@ -65,9 +67,10 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`id`, `nom`, `prenom`, `email`, `poste`, `telephone`, `statut`, `prospect_id`) VALUES
-(1, 'DUCLOS', 'Erwann', 'erwann@duclos.fr', 'Professeur', 111111111, 1, 1),
-(2, 'PANNETIER', 'Magali', 'magali@pannetier.fr', 'Directrice', 111111110, 0, 1),
-(11, 'test', 'test', 'test@test.com', 'test', 123456789, 1, 1);
+(1, 'DUCLOS', 'Erwann', 'erwann.duclos@epsi.fr', 'Professeur', 657462834, 1, 1),
+(2, 'PANNETIER', 'Magali', 'magali.pannetier@epsi.fr', 'Directrice', 684235485, 1, 1),
+(11, 'SALAUN', 'Enora', 'enora.salaun@epsi.fr', 'Responsable entreprise', 696464724, 0, 1),
+(15, 'SALAUN', 'Enora', 'enora.salaun@capgemini.fr', 'RH', 674369745, 1, 13);
 
 -- --------------------------------------------------------
 
@@ -140,8 +143,8 @@ CREATE TABLE `prospect` (
 --
 
 INSERT INTO `prospect` (`id`, `nom`, `numero_siret`, `adresse_postale`, `code_postal`, `ville`, `description`, `url`) VALUES
-(1, 'EPSI', '111 111 1111', '123 Rue de l\'EPSI', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/'),
-(3, 'Saint Martin', '111 111 1110', '123 Rue de Saint Mart', 35000, 'Rennes', 'Lycée St Martin', 'https://www.saintmartin-rennes.org/');
+(1, 'EPSI', '393 504 816 00231', 'Rue Fernand Robert', 35000, 'Rennes', 'École de programmation de l\'EPSI à Rennes', 'https://www.epsi.fr/'),
+(13, 'Capgemini', '479 766 842 00724', '7 Rue Claude Chappe', 35510, 'Cesson-Sévigné', 'Capgemini de Cesson-Sévigné', 'https://www.capgemini.com/fr-fr/capgemini-a-rennes/');
 
 -- --------------------------------------------------------
 
@@ -215,7 +218,7 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT pour la table `entreprise`
@@ -233,7 +236,7 @@ ALTER TABLE `facture`
 -- AUTO_INCREMENT pour la table `prospect`
 --
 ALTER TABLE `prospect`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
