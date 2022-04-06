@@ -5,13 +5,15 @@
 {% block content %}
 <section>
     {% for dernier_com in commentaire %}
-    <p class="prospect">Le {{dernier_com.1}}</br>"{{dernier_com.0}}"</br>écrit par {{dernier_com.2}}</p>
+    <p class="commentaire texte">Le {{dernier_com.1}}</br>"{{dernier_com.0}}"</br>écrit par {{dernier_com.2}}</p>
     {% endfor %}
-    <button class="prospect" onclick="myFunction()">Afficher/Cacher les autres commentaires</button>
     {% for comm in liste_commentaires %}
-    <p class="prospect" id="cacher">Le {{comm.1}}</br>"{{comm.0}}"</br>écrit par {{comm.2}}</p>
+    <p class="commentaire texte" id="cacher">Le {{comm.1}}</br>"{{comm.0}}"</br>écrit par {{comm.2}}</p>
     {% endfor %}
-    <input class="retour" type="button" value="Retour" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
+    <div class="centrer-espacer">
+        <button class="margin" onclick="myFunction()">Afficher/Cacher les autres commentaires</button>
+        <input class="margin" type="button" value="Retour" onclick="window.location.href='/menu-entreprises/{{nom_prospect}}/actif/filtre-off';">
+    </div>
 </section>
 <script>
 function myFunction() {
